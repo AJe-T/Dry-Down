@@ -141,7 +141,7 @@ export default function StarterPackPage() {
             <div className="flex flex-col sm:flex-row items-center gap-6 border-t border-brand-dark/10 pt-10">
               <div className="font-serif text-5xl">{sp.price}</div>
               <button className="w-full sm:w-auto flex-1 bg-brand-dark text-white px-8 py-5 font-sans font-bold text-xs uppercase tracking-[0.2em] hover:bg-brand-accent hover:text-brand-dark transition-all shadow-xl hover:shadow-2xl">
-                Add to Cart
+                Buy in Amazon
               </button>
             </div>
           </div>
@@ -161,10 +161,7 @@ export default function StarterPackPage() {
             playsInline
             className="w-full h-full object-cover filter brightness-[0.7] contrast-[1.1]"
           >
-            <source
-              src="https://videos.pexels.com/video-files/5867946/5867946-uhd_2560_1440_24fps.mp4"
-              type="video/mp4"
-            />
+            <source src="/hero2.mp4" type="video/mp4" />
           </video>
         </motion.div>
         <div className="absolute inset-0 bg-brand-dark/50 mix-blend-multiply"></div>
@@ -189,7 +186,7 @@ export default function StarterPackPage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-20">
             <p className="font-sans font-bold text-[10px] md:text-xs uppercase tracking-[0.4em] mb-4 text-brand-accent">
-              What's Inside
+              What&apos;s Inside
             </p>
             <h2 className="font-serif text-5xl md:text-7xl text-brand-dark mb-6">
               The Complete Wardrobe.

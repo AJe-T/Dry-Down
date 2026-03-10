@@ -23,10 +23,11 @@ export type ProductProps = {
 };
 
 export const products: ProductProps[] = [
+  /*
   {
     id: "starter",
     name: "Discovery Edition",
-    price: "$85.00",
+    price: "₹85.00",
     colorHex: "#D4AF37",
     colorName: "Discovery Collection",
     shortDesc:
@@ -61,10 +62,11 @@ export const products: ProductProps[] = [
     imgGradient:
       "linear-gradient(45deg, #1C1C1C 25%, #6f2a33 50%, #4c7c42 75%, #F5F2EB 100%)",
   },
+  */
   {
     id: "burnt-sugar",
     name: "Burnt Sugar",
-    price: "$38.00",
+    price: "₹380.00",
     colorHex: "#6f2a33",
     colorName: "Deep Caramel & Wood",
     shortDesc: "A dark, rich ode to gourmand warmth and toasted vanilla.",
@@ -98,7 +100,7 @@ export const products: ProductProps[] = [
   {
     id: "acid-bloom",
     name: "Acid Bloom",
-    price: "$38.00",
+    price: "₹380.00",
     colorHex: "#4c7c42",
     colorName: "Vibrant Green Flora",
     shortDesc:
@@ -133,7 +135,7 @@ export const products: ProductProps[] = [
   {
     id: "pale-ash",
     name: "Pale Ash",
-    price: "$38.00",
+    price: "₹380.00",
     colorHex: "#6d5f83",
     colorName: "Ethereal Lavender Dust",
     shortDesc:
@@ -165,10 +167,11 @@ export const products: ProductProps[] = [
     heartNotes: "French Lavender, Orris Root",
     baseNotes: "Ash Wood, Tonka Bean",
   },
+  /*
   {
     id: "butter-petal",
     name: "Butter Petal",
-    price: "$38.00",
+    price: "₹380.00",
     colorHex: "#c9884e",
     colorName: "Warm Golden Tan",
     shortDesc:
@@ -200,4 +203,5 @@ export const products: ProductProps[] = [
     heartNotes: "Tuberose, Gardenia",
     baseNotes: "Sandalwood, Coconut Milk",
   },
+  */
 ];

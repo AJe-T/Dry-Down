@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { ProductProps } from "@/lib/products";
 import Link from "next/link";
 import React, { useRef, useState } from "react";
-import { ArrowLeft, Droplet, Wind, Leaf, Sparkles } from "lucide-react";
+import { Droplet, Wind, Leaf, Sparkles } from "lucide-react";
 import {
   Chart as ChartJS,
   RadialLinearScale,
@@ -191,7 +191,7 @@ export default function SingleProductClient({
               className="w-full sm:w-auto flex-1 bg-brand-dark text-white px-8 py-4 font-sans text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-opacity shadow-lg"
               style={{ backgroundColor: product.colorHex }}
             >
-              Add to Cart
+              Buy in Amazon
             </button>
           </div>
         </div>
@@ -362,31 +362,135 @@ export default function SingleProductClient({
           {/* Right side circle visual */}
           <div className="relative w-full aspect-square max-w-[500px] mx-auto flex items-center justify-center">
             {/* Outer Circle Ring */}
-            <div className="absolute inset-4 rounded-full border border-[#c87a55]/20 shadow-inner"></div>
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-4 rounded-full border border-dashed border-[#c87a55]/30"
+            ></motion.div>
+
+            {/* Optional Inner Ring */}
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-12 rounded-full border border-[#c87a55]/20 shadow-inner"
+            ></motion.div>
 
             {/* Center text */}
-            <div className="font-serif font-bold text-2xl text-brand-dark/30 italic flex items-center gap-3">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              className="font-serif font-bold text-2xl text-brand-dark flex items-center gap-3 relative z-10 p-6 bg-brand-base rounded-full shadow-2xl"
+            >
               Pure
               <span
-                className="w-3 h-3 rounded-full"
+                className="w-4 h-4 rounded-full shadow-md"
                 style={{ backgroundColor: product.colorHex }}
               ></span>
               Fragrance
-            </div>
+            </motion.div>
 
-            {/* Floating Icons around circle */}
-            <div className="absolute top-[8%] right-[25%] text-[#c87a55]">
-              <Wind className="w-6 h-6" />
-            </div>
-            <div className="absolute top-[50%] right-0 text-[#c87a55] transform -translate-y-1/2 -translate-x-4">
-              <Sparkles className="w-6 h-6" />
-            </div>
-            <div className="absolute bottom-[2%] left-[50%] text-[#c87a55] transform -translate-x-1/2 -translate-y-4">
-              <Leaf className="w-6 h-6" />
-            </div>
-            <div className="absolute top-[50%] left-0 text-[#c87a55] transform -translate-y-1/2 translate-x-4">
-              <Droplet className="w-6 h-6" />
-            </div>
+            {/* Orbiting Icons */}
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-0 pointer-events-none"
+            >
+              {/* Wind (Top Right) */}
+              <div className="absolute top-[8%] right-[25%] text-[#c87a55] drop-shadow-lg">
+                <motion.div
+                  animate={{ rotate: -360 }}
+                  transition={{
+                    duration: 30,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                >
+                  <motion.div
+                    animate={{ y: [0, -10, 0] }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    <Wind className="w-8 h-8" />
+                  </motion.div>
+                </motion.div>
+              </div>
+
+              {/* Sparkles (Right) */}
+              <div className="absolute top-[50%] right-0 -translate-y-1/2 text-[#c87a55] drop-shadow-lg">
+                <motion.div
+                  animate={{ rotate: -360 }}
+                  transition={{
+                    duration: 30,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                >
+                  <motion.div
+                    animate={{ y: [0, -10, 0] }}
+                    transition={{
+                      duration: 5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: 1,
+                    }}
+                  >
+                    <Sparkles className="w-8 h-8" />
+                  </motion.div>
+                </motion.div>
+              </div>
+
+              {/* Leaf (Bottom Left) */}
+              <div className="absolute bottom-[8%] left-[25%] text-[#c87a55] drop-shadow-lg">
+                <motion.div
+                  animate={{ rotate: -360 }}
+                  transition={{
+                    duration: 30,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                >
+                  <motion.div
+                    animate={{ y: [0, -8, 0] }}
+                    transition={{
+                      duration: 4.5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: 2,
+                    }}
+                  >
+                    <Leaf className="w-8 h-8" />
+                  </motion.div>
+                </motion.div>
+              </div>
+
+              {/* Droplet (Left) */}
+              <div className="absolute top-[50%] left-0 -translate-y-1/2 text-[#c87a55] drop-shadow-lg">
+                <motion.div
+                  animate={{ rotate: -360 }}
+                  transition={{
+                    duration: 30,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                >
+                  <motion.div
+                    animate={{ y: [0, -12, 0] }}
+                    transition={{
+                      duration: 5.5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: 0.5,
+                    }}
+                  >
+                    <Droplet className="w-8 h-8" />
+                  </motion.div>
+                </motion.div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </div>

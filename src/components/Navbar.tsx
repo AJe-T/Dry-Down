@@ -59,12 +59,14 @@ export default function Navbar() {
           >
             Collection
           </Link>
+          {/*
           <Link
             href="/starter"
             className="hover:text-brand-accent transition-colors"
           >
             Starter Set
           </Link>
+          */}
         </div>
         <button
           onClick={() => setIsPopupOpen(true)}

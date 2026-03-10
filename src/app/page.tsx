@@ -1,12 +1,19 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { products } from "@/lib/products";
+import { products, ProductProps } from "@/lib/products";
 import Link from "next/link";
 import React, { useRef, useState } from "react";
 
 // Helper component for the 3D Tilt Effect
-function TiltCard({ product, index }: { product: any; index: number }) {
+
+function TiltCard({
+  product,
+  index,
+}: {
+  product: ProductProps;
+  index: number;
+}) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [rotateX, setRotateX] = useState(0);
   const [rotateY, setRotateY] = useState(0);
@@ -89,7 +96,27 @@ function TiltCard({ product, index }: { product: any; index: number }) {
 }
 
 export default function Home() {
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
   const collectionProducts = products.filter((p) => p.id !== "starter");
+
+  const faqs = [
+    {
+      q: "What makes DRY DOWN different from regular detergent?",
+      a: "We replaced harsh chemical surfactants with plant-based enzymes and organic conditioning agents. Our fragrances are developed in Grasse, mirroring fine perfumery rather than synthetic household cleaners.",
+    },
+    {
+      q: "Are your formulations safe for delicate fabrics?",
+      a: "Yes. Our fabric conditioners are perfectly balanced to treat silk, wool, and cashmere without stripping their natural fibers. We recommend a gentle cycle for all intimates and luxury knits.",
+    },
+    {
+      q: "How long does the fragrance last?",
+      a: "Unlike standard detergents where the scent evaporates post-dry, our encapsulated oils lock into the fabric weave. The aroma will softly emanate while worn and can linger for up to two weeks in storage.",
+    },
+    {
+      q: "Is DRY DOWN environmentally friendly?",
+      a: "Our formulas are 100% biodegradable and free of microplastics, parabens, and artificial dyes. We source our botanical ingredients sustainably and bottle our products in infinitely recyclable aluminum.",
+    },
+  ];
 
   const campaignRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
@@ -107,30 +134,27 @@ export default function Home() {
   const labImageY = useTransform(labProgress, [0, 1], ["-20%", "20%"]);
   const labImageScale = useTransform(labProgress, [0, 1], [1, 1.15]);
 
-
-
   return (
     <div className="bg-brand-base text-brand-dark w-full overflow-x-hidden">
       {/* HERO SECTION */}
       <section className="relative h-screen w-full flex flex-col justify-center items-center overflow-hidden bg-brand-base">
         {/* Background Visuals */}
-        <div className="absolute inset-0 z-0 opacity-30 mix-blend-multiply">
+        <div className="absolute inset-0 z-0">
           <video
             autoPlay
             loop
             muted
             playsInline
-            className="w-full h-full object-cover opacity-80"
+            className="w-full h-full object-cover"
           >
-            <source
-              src="https://videos.pexels.com/video-files/5005825/5005825-uhd_2560_1440_30fps.mp4"
-              type="video/mp4"
-            />
+            <source src="/hero1.mp4" type="video/mp4" />
           </video>
+          {/* Dark Overlay for better text readability */}
+          <div className="absolute inset-0 bg-black/40"></div>
         </div>
 
         {/* Pulse Effect */}
-        <div className="absolute inset-0 z-0 opacity-20 mix-blend-overlay pointer-events-none">
+        <div className="absolute inset-0 z-0 opacity-20 mix-blend-overlay pointer-events-none text-white">
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand-accent rounded-full blur-[120px] animate-pulse"></div>
         </div>
 
@@ -138,25 +162,27 @@ export default function Home() {
           <p className="font-sans font-bold text-xs uppercase tracking-[0.3em] mb-4 text-brand-accent drop-shadow-sm">
             Est. 2026 &bull; Global
           </p>
-          <h1 className="font-serif text-[3.5rem] leading-[1.1] md:text-9xl font-bold text-brand-dark mb-6 md:leading-none">
+          <h1 className="font-serif text-[3.5rem] leading-[1.1] md:text-9xl font-bold text-white mb-6 md:leading-none">
             LAUNDRY,
             <br />
             <span className="italic font-light opacity-90">ELEVATED.</span>
           </h1>
-          <p className="font-sans text-brand-dark opacity-80 max-w-lg mx-auto mb-10 text-lg leading-relaxed font-medium">
+          <p className="font-sans text-white/90 max-w-lg mx-auto mb-10 text-lg leading-relaxed font-medium">
             Stop washing. Start caring. High-performance chemistry meets haute
             couture fragrance.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {/* 
             <Link
               href="/starter"
               className="bg-brand-dark text-white px-8 py-4 rounded-none font-sans font-bold uppercase tracking-wider hover:bg-brand-accent transition-colors shadow-xl text-xs"
             >
               Shop Starter Pack
             </Link>
+            */}
             <Link
               href="#collection"
-              className="border-2 border-brand-dark text-brand-dark px-8 py-4 rounded-none font-sans font-bold uppercase tracking-wider hover:bg-brand-dark hover:text-white transition-colors text-xs text-center"
+              className="border-2 border-white text-white px-8 py-4 rounded-none font-sans font-bold uppercase tracking-wider hover:bg-white hover:text-brand-dark transition-colors text-xs text-center"
             >
               Explore Scents
             </Link>
@@ -196,7 +222,7 @@ export default function Home() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-8">
           {collectionProducts.map((p, index) => (
             <TiltCard key={p.id} product={p} index={index + 1} />
           ))}
@@ -204,6 +230,7 @@ export default function Home() {
       </section>
 
       {/* STARTER PACK TEASER SECTION */}
+      {/*
       <section className="relative py-32 bg-brand-dark text-white overflow-hidden border-t border-brand-dark/10">
         <div className="absolute inset-0 z-0 opacity-40">
           <video
@@ -239,6 +266,7 @@ export default function Home() {
           </Link>
         </div>
       </section>
+      */}
 
       {/* THE LABORATORY SECTION (img6, img7) */}
       <section
@@ -304,10 +332,7 @@ export default function Home() {
             playsInline
             className="w-full h-full object-cover grayscale mix-blend-overlay"
           >
-            <source
-              src="https://videos.pexels.com/video-files/8741348/8741348-uhd_2560_1440_25fps.mp4"
-              type="video/mp4"
-            />
+            <source src="/hero3.mp4" type="video/mp4" />
           </video>
         </div>
         <div className="max-w-5xl mx-auto px-6 relative z-10 text-center drop-shadow-lg">
@@ -442,60 +467,132 @@ export default function Home() {
         </div>
       </section>
 
-      {/* EMAIL SUBSCRIPTION SECTION */}
-      <section className="relative py-40 bg-brand-dark overflow-hidden border-t border-white/10 flex items-center justify-center">
-        {/* Abstract Background Shapes */}
-        <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-brand-accent/20 rounded-full blur-[100px] pointer-events-none"></div>
-        <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-white/5 rounded-full blur-[120px] pointer-events-none"></div>
+      {/* FAQ SECTION */}
+      <section className="py-32 bg-brand-base border-t border-brand-dark/10">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+            <div className="lg:col-span-4 flex flex-col items-start">
+              <p className="font-sans font-bold text-[10px] md:text-xs uppercase tracking-[0.4em] mb-4 text-brand-accent">
+                Inquiries
+              </p>
+              <h2 className="font-serif text-5xl md:text-6xl text-brand-dark leading-tight sticky top-32">
+                Frequently Asked
+                <br />
+                Questions
+              </h2>
+            </div>
+            <div className="lg:col-span-8 flex flex-col border-t-2 border-brand-dark">
+              {faqs.map((faq, idx) => (
+                <div key={idx} className="border-b border-brand-dark/20 py-8">
+                  <button
+                    onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                    className="w-full flex justify-between items-center text-left group focus:outline-none"
+                  >
+                    <h3 className="font-serif text-2xl md:text-3xl text-brand-dark group-hover:text-brand-accent transition-colors pr-8">
+                      {faq.q}
+                    </h3>
+                    <span
+                      className="text-4xl font-light text-brand-dark/50 group-hover:text-brand-accent transition-transform duration-500"
+                      style={{
+                        transform:
+                          openFaq === idx ? "rotate(45deg)" : "rotate(0deg)",
+                      }}
+                    >
+                      +
+                    </span>
+                  </button>
+                  <motion.div
+                    initial={false}
+                    animate={{
+                      height: openFaq === idx ? "auto" : 0,
+                      opacity: openFaq === idx ? 1 : 0,
+                    }}
+                    className="overflow-hidden"
+                    transition={{
+                      duration: 0.4,
+                      ease: [0.04, 0.62, 0.23, 0.98],
+                    }}
+                  >
+                    <p className="font-sans text-brand-dark/70 leading-relaxed text-lg pt-6 max-w-2xl">
+                      {faq.a}
+                    </p>
+                  </motion.div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
-        <div className="relative z-10 w-full max-w-5xl mx-auto px-6">
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-10 md:p-20 rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)] flex flex-col items-center text-center">
-            <div className="w-16 h-16 mb-8 rounded-full bg-brand-accent text-brand-dark flex items-center justify-center text-3xl shadow-[0_0_30px_rgba(255,255,255,0.2)]">
-              &#10022;
+      {/* EMAIL SUBSCRIPTION SECTION */}
+      <section className="py-24 bg-brand-base overflow-hidden flex items-center justify-center border-t border-brand-dark/10 mb-12">
+        <div className="w-full max-w-7xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row bg-[#151515] overflow-hidden shadow-2xl relative border border-white/10">
+            {/* Left Image Section */}
+            <div className="w-full md:w-5/12 relative h-[300px] md:h-auto hidden md:block">
+              <img
+                src="/img5.png"
+                alt="Unlock the Ritual"
+                className="absolute inset-0 w-full h-full object-cover filter brightness-[0.6] contrast-[1.2] grayscale"
+              />
+              <div className="absolute inset-0 bg-brand-accent mix-blend-multiply opacity-10"></div>
             </div>
 
-            <p className="font-sans font-bold text-[10px] md:text-xs uppercase tracking-[0.4em] mb-4 text-brand-accent">
-              The Inner Circle
-            </p>
-            <h2 className="font-serif text-5xl md:text-7xl text-white mb-6 leading-tight drop-shadow-lg">
-              Unlock the Ritual.
-            </h2>
-            <p className="font-sans text-white/70 mb-12 max-w-xl mx-auto text-lg leading-relaxed">
-              We invite you to join our private society. Provide your
-              correspondence details below to receive a{" "}
-              <span className="text-brand-accent italic">
-                complimentary discovery set
-              </span>
-              , curated directly from our ateliers in Grasse, before it releases
-              to the public.
-            </p>
+            {/* Right Form Section */}
+            <div className="w-full md:w-7/12 p-10 md:p-24 relative overflow-hidden flex flex-col justify-center">
+              {/* Subtle grid background inside form */}
+              <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white to-transparent"></div>
 
-            <form
-              className="relative w-full max-w-lg mx-auto flex flex-col md:flex-row gap-4"
-              onSubmit={(e) => {
-                e.preventDefault();
-                alert(
-                  "Success! 🎉\n\nNote: Since this is a frontend-only project without a database, we cannot actually store this email right now. In a production scenario, you would connect this form to a backend service like Formspree, Mailchimp, or Resend API to handle submissions.",
-                );
-              }}
-            >
-              <input
-                type="email"
-                placeholder="Enter your email address..."
-                required
-                className="w-full px-8 py-5 bg-white/10 backdrop-blur-md border border-white/20 text-white placeholder:text-white/40 focus:border-brand-accent focus:bg-white/15 outline-none font-sans transition-all rounded-none shadow-inner"
-              />
-              <button
-                type="submit"
-                className="w-full md:w-auto bg-brand-accent text-brand-dark px-10 py-5 font-sans font-bold text-xs uppercase tracking-[0.2em] hover:bg-white transition-colors shrink-0 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
-              >
-                Request Sample
-              </button>
-            </form>
+              <div className="relative z-10">
+                <div className="w-12 h-12 mb-8 flex items-center justify-center text-3xl text-brand-accent">
+                  &#10022;
+                </div>
+                <p className="font-sans font-bold text-[10px] md:text-xs uppercase tracking-[0.4em] mb-4 text-brand-accent">
+                  The Inner Circle
+                </p>
+                <h2 className="font-serif text-5xl md:text-6xl text-white mb-6 leading-tight drop-shadow-sm">
+                  Unlock the Ritual.
+                </h2>
+                <p className="font-sans text-white/60 mb-12 text-lg leading-relaxed max-w-md font-light">
+                  We invite you to join our private society. Provide your
+                  correspondence details below to receive a{" "}
+                  <span className="text-brand-accent font-serif italic text-xl">
+                    complimentary discovery set
+                  </span>
+                  , curated directly from our ateliers in Grasse.
+                </p>
 
-            <p className="font-sans text-[10px] text-white/40 mt-8 tracking-widest uppercase">
-              Limited availability. One per household.
-            </p>
+                <form
+                  className="relative w-full flex flex-col gap-6"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    alert(
+                      "Success! 🎉\n\nNote: Since this is a frontend-only project without a database, we cannot actually store this email right now.",
+                    );
+                  }}
+                >
+                  <div className="relative border-b border-white/20 pb-3 group">
+                    <input
+                      type="email"
+                      placeholder="Enter your email address..."
+                      required
+                      className="w-full bg-transparent text-white placeholder:text-white/30 focus:outline-none font-sans text-lg tracking-wide"
+                    />
+                    <div className="absolute inset-x-0 bottom-[-1px] h-[1px] bg-brand-accent transform scale-x-0 group-focus-within:scale-x-100 transition-transform origin-left duration-500"></div>
+                  </div>
+                  <button
+                    type="submit"
+                    className="mt-4 w-full md:w-auto self-start bg-brand-accent text-brand-dark px-12 py-5 font-sans font-bold text-xs uppercase tracking-[0.2em] hover:bg-white hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all duration-300"
+                  >
+                    Request Sample
+                  </button>
+                </form>
+
+                <p className="font-sans text-[10px] text-white/30 mt-10 tracking-widest uppercase">
+                  Limited availability. One per household.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>

@@ -55,11 +55,13 @@ export default function RootLayout({
                 Shop
               </h4>
               <ul className="space-y-4 font-serif text-lg opacity-80">
+                {/* 
                 <li>
                   <Link href="/starter" className="hover:text-brand-accent">
                     Discovery Edition
                   </Link>
                 </li>
+                */}
                 <li>
                   <Link
                     href="/products/burnt-sugar"
@@ -84,6 +86,7 @@ export default function RootLayout({
                     Pale Ash
                   </Link>
                 </li>
+                {/*
                 <li>
                   <Link
                     href="/products/butter-petal"
@@ -92,6 +95,7 @@ export default function RootLayout({
                     Butter Petal
                   </Link>
                 </li>
+                */}
               </ul>
             </div>
             <div>
