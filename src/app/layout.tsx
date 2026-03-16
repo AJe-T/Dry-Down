@@ -52,9 +52,14 @@ export default function RootLayout({
             </div>
             <div>
               <h4 className="font-sans text-xs font-bold uppercase tracking-widest mb-6 text-brand-accent">
-                Shop
+                Explore
               </h4>
               <ul className="space-y-4 font-serif text-lg opacity-80">
+                <li>
+                  <Link href="/about" className="hover:text-brand-accent">
+                    About Dry Down
+                  </Link>
+                </li>
                 {/* 
                 <li>
                   <Link href="/starter" className="hover:text-brand-accent">

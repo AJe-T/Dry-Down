@@ -51,6 +51,54 @@ export default function SingleProductClient({
     setRotateY(0);
   };
 
+  const parseNoteList = (value: string | undefined, fallback: string) =>
+    (value || fallback)
+      .split(",")
+      .map((note) => note.trim())
+      .filter(Boolean);
+
+  const topNotes = parseNoteList(product.topNotes, "Bergamot, Clary Sage");
+  const heartNotes = parseNoteList(product.heartNotes, "French Lavender, Orris Root");
+  const baseNotes = parseNoteList(product.baseNotes, "Ash Wood, Tonka Bean");
+
+  const featuredNotes = Array.from(
+    new Set([...topNotes, ...heartNotes, ...baseNotes]),
+  ).slice(0, 6);
+
+  const scentPyramid: {
+    title: string;
+    notes: string[];
+    widthClass: string;
+    icon: React.ReactNode;
+  }[] = [
+    {
+      title: "Top Notes",
+      notes: topNotes,
+      widthClass: "w-[68%]",
+      icon: <Sparkles className="w-4 h-4" />,
+    },
+    {
+      title: "Heart Notes",
+      notes: heartNotes,
+      widthClass: "w-[84%]",
+      icon: <Wind className="w-4 h-4" />,
+    },
+    {
+      title: "Base Notes",
+      notes: baseNotes,
+      widthClass: "w-full",
+      icon: <Leaf className="w-4 h-4" />,
+    },
+  ];
+
+  const getNoteInitials = (note: string) =>
+    note
+      .split(" ")
+      .map((part) => part[0] || "")
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+
   const chartData = {
     labels: ["Woody", "Floral", "Fresh", "Sweet", "Spicy"],
     datasets: [
@@ -151,6 +199,43 @@ export default function SingleProductClient({
             {product.colorName}
           </p>
 
+          <div className="mb-10 border border-brand-dark/10 bg-white/80 p-5 md:p-6 shadow-sm">
+            <p className="font-sans text-[10px] font-bold uppercase tracking-[0.3em] text-[#c87a55] mb-3">
+              The Scent Story
+            </p>
+            <h3 className="font-serif text-2xl md:text-3xl text-brand-dark mb-6">
+              Fragrance Pyramid
+            </h3>
+
+            <div className="space-y-3">
+              {scentPyramid.map((tier) => (
+                <div key={tier.title} className={`${tier.widthClass} mx-auto`}>
+                  <div
+                    className="border border-brand-dark/10 bg-brand-base px-4 py-3 md:px-5 md:py-4 shadow-sm"
+                    style={{
+                      boxShadow: `0 10px 20px -18px ${product.colorHex}`,
+                    }}
+                  >
+                    <div className="flex items-center gap-2 mb-2 text-brand-dark">
+                      <span
+                        className="inline-flex items-center justify-center w-7 h-7 rounded-full text-white"
+                        style={{ backgroundColor: product.colorHex }}
+                      >
+                        {tier.icon}
+                      </span>
+                      <p className="font-sans text-[10px] font-bold uppercase tracking-[0.25em]">
+                        {tier.title}
+                      </p>
+                    </div>
+                    <p className="font-sans text-xs md:text-sm text-brand-dark/80 leading-relaxed">
+                      {tier.notes.join(" / ")}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <p className="font-sans text-brand-dark opacity-80 leading-relaxed mb-10 text-lg border-b border-gray-200 pb-10">
             {product.description}
           </p>
@@ -213,6 +298,30 @@ export default function SingleProductClient({
           {/* CHART CONTAINER */}
           <div className="chart-container flex-1 min-h-[300px] w-full relative">
             <Radar data={chartData} options={chartOptions} />
+          </div>
+
+          <div className="mt-8">
+            <p className="font-sans text-[10px] font-bold uppercase tracking-[0.25em] mb-4 text-center text-brand-dark/60">
+              Featured Notes
+            </p>
+            <div className="grid grid-cols-1 gap-3">
+              {featuredNotes.map((note) => (
+                <div
+                  key={note}
+                  className="flex items-center gap-3 border border-brand-dark/10 bg-brand-base px-3 py-2"
+                >
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-[10px] font-sans font-bold tracking-wider text-white shadow-md"
+                    style={{ backgroundColor: product.colorHex }}
+                  >
+                    {getNoteInitials(note)}
+                  </div>
+                  <p className="font-sans text-xs uppercase tracking-[0.16em] text-brand-dark/80">
+                    {note}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="mt-10 text-center border-t border-gray-100 pt-6">
@@ -320,7 +429,7 @@ export default function SingleProductClient({
                     Top Notes
                   </h4>
                   <span className="font-sans text-[10px] italic opacity-60 text-right max-w-[60%]">
-                    {product.topNotes || "Bergamot, Clary Sage"}
+                    {topNotes.join(", ")}
                   </span>
                 </div>
                 <div
@@ -334,7 +443,7 @@ export default function SingleProductClient({
                     Heart Notes
                   </h4>
                   <span className="font-sans text-[10px] italic opacity-60 text-right max-w-[60%]">
-                    {product.heartNotes || "French Lavender"}
+                    {heartNotes.join(", ")}
                   </span>
                 </div>
                 <div
@@ -348,7 +457,7 @@ export default function SingleProductClient({
                     Base Notes
                   </h4>
                   <span className="font-sans text-[10px] italic opacity-60 text-right max-w-[60%]">
-                    {product.baseNotes || "Ash Wood, Tonka Bean"}
+                    {baseNotes.join(", ")}
                   </span>
                 </div>
                 <div
