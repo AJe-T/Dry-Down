@@ -2,49 +2,76 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer utilities {
-  .card-3d-container {
-    perspective: 1000px;
-  }
-  .card-3d {
-    transition: transform 0.1s;
-    transform-style: preserve-3d;
-  }
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --font-sans: var(--font-syne), system-ui, sans-serif;
+  --font-serif: var(--font-playfair), serif;
+}
 
-  .fade-in {
-    animation: fadeIn 0.5s ease-in forwards;
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
   }
+}
 
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+html {
+  overflow-x: hidden;
+}
 
-  .chart-container {
-    position: relative;
-    width: 100%;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-    height: 300px;
-    max-height: 300px;
-  }
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f5f2eb;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1c2321;
-  border-radius: 4px;
+  background: #333;
+  border-radius: 10px;
+}
+
+/* Typography Utilities */
+.text-display {
+  font-family: var(--font-serif);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.glass-morphism {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-link {
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: translateX(-101%);
+  transition: transform 0.3s ease;
+}
+
+.nav-link:hover::after {
+  transform: translateX(0);
 }

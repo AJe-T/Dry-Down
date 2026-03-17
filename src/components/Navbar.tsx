@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { X, ShoppingBag, Menu } from "lucide-react";
 
 const POPUP_STORAGE_KEY = "drydown.sample-popup-seen";
 
@@ -17,7 +18,7 @@ export default function Navbar() {
     try {
       window.sessionStorage.setItem(POPUP_STORAGE_KEY, "true");
     } catch {
-      // Ignore storage errors (private mode / disabled storage)
+      // Ignore storage errors in private/restricted environments
     }
   };
 
@@ -36,7 +37,6 @@ export default function Navbar() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
-
     window.addEventListener("scroll", handleScroll);
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
@@ -44,44 +44,35 @@ export default function Navbar() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-
     let hasSeenPopup = false;
     try {
-      hasSeenPopup = window.sessionStorage.getItem(POPUP_STORAGE_KEY) === "true";
+      hasSeenPopup =
+        window.sessionStorage.getItem(POPUP_STORAGE_KEY) === "true";
     } catch {
       hasSeenPopup = false;
     }
-
     if (hasSeenPopup) return;
 
     const timer = window.setTimeout(() => {
       setIsPopupOpen(true);
       markPopupSeen();
-    }, 900);
+    }, 2000);
 
     return () => window.clearTimeout(timer);
   }, []);
 
-  // Close popup with escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") closePopup();
     };
-
-    if (isPopupOpen) {
-      window.addEventListener("keydown", handleKeyDown);
-    }
-
+    if (isPopupOpen) window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isPopupOpen]);
 
-  // Keep scroll focused on the popup while it is open.
   useEffect(() => {
     if (!isPopupOpen) return;
-
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-
     return () => {
       document.body.style.overflow = previousOverflow;
     };
@@ -89,26 +80,20 @@ export default function Navbar() {
 
   const handleSubscribe = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const value = contactValue.trim();
-    const normalizedValue = value.replace(/\s+/g, "");
     const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-    const isPhone = /^\+?[0-9]{7,15}$/.test(normalizedValue);
+    const isPhone = /^\+?[0-9]{7,15}$/.test(value.replace(/\s+/g, ""));
 
     if (!value) {
-      setFormError("Please enter an email or phone number.");
+      setFormError("Identity required.");
       return;
     }
-
     if (!isEmail && !isPhone) {
-      setFormError("Enter a valid email or phone number.");
+      setFormError("Invalid email or phone format.");
       return;
     }
 
     setFormError("");
-    alert(
-      "Thank you for requesting a Dry Down sample.\n\nThis demo is frontend-only, so contact details are not stored in a backend yet.",
-    );
     setContactValue("");
     closePopup();
   };
@@ -116,7 +101,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed w-full z-50 py-4 px-4 md:px-6 top-0 flex justify-between items-center transition-all duration-300 pointer-events-auto ${
+        className={`fixed w-full z-50 py-5 px-6 md:px-12 top-0 flex justify-between items-center transition-all duration-300 ${
           scrolled
             ? "bg-brand-dark/25 backdrop-blur-md text-white shadow-lg"
             : "bg-transparent mix-blend-difference text-white"
@@ -126,135 +111,144 @@ export default function Navbar() {
           href="/"
           className="font-serif text-2xl md:text-3xl font-bold tracking-tighter hover:text-brand-accent transition-colors"
         >
-          DRY DOWN.
+          DRY<span className="font-light">DOWN</span>
         </Link>
         <div className="hidden md:flex gap-6 md:gap-8 font-sans font-bold tracking-widest text-[10px] md:text-xs uppercase items-center">
           <Link
             href="/#collection"
-            className="hover:text-brand-accent transition-colors"
+            className="hover:text-accent transition-colors"
           >
             Collection
           </Link>
-          <Link href="/about" className="hover:text-brand-accent transition-colors">
+          <Link href="/about" className="hover:text-accent transition-colors">
             About
           </Link>
-          {/*
-          <Link
-            href="/starter"
-            className="hover:text-brand-accent transition-colors"
-          >
-            Starter Set
-          </Link>
-          */}
         </div>
-        <div className="flex items-center gap-3 md:gap-4">
-          <Link
-            href="/about"
-            className="md:hidden font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-white/90 hover:text-brand-accent transition-colors"
-          >
-            About
-          </Link>
+
+        <div className="flex items-center gap-6">
           <button
             onClick={openPopup}
-            className="bg-white text-black font-sans text-[10px] md:text-xs font-bold uppercase px-4 md:px-6 py-2 rounded-full hover:bg-brand-accent transition-colors"
+            className={`px-6 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border ${
+              scrolled
+                ? "bg-black text-white border-black hover:bg-neutral-800"
+                : "bg-white text-black border-white hover:bg-transparent hover:text-white"
+            }`}
           >
-            Get Sample
+            Request Sample
+          </button>
+
+          <button
+            className={`md:hidden ${scrolled ? "text-black" : "text-white mix-blend-difference"}`}
+          >
+            <Menu size={20} strokeWidth={1.5} />
           </button>
         </div>
       </nav>
 
       <AnimatePresence>
         {isPopupOpen && (
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-            {/* Backdrop */}
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-0 md:p-10">
+            {/* Elegant Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={closePopup}
-              className="absolute inset-0 bg-brand-dark/80 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/60 backdrop-blur-md"
             />
 
-            {/* Modal Content */}
+            {/* Premium Modal */}
             <motion.div
-              initial={{ opacity: 0, y: 50, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.95 }}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="sample-popup-title"
-              className="relative w-full max-w-4xl bg-brand-base border border-brand-dark/10 shadow-2xl overflow-hidden shadow-black/50"
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="relative w-full max-w-5xl h-full md:h-auto md:min-h-[600px] bg-white shadow-2xl overflow-hidden flex flex-col md:flex-row"
             >
+              {/* Close Icon */}
               <button
                 onClick={closePopup}
-                aria-label="Close sample popup"
-                className="absolute right-4 top-4 z-20 w-10 h-10 rounded-full bg-brand-dark/70 text-white text-2xl leading-none hover:bg-brand-dark transition-colors"
+                className="absolute right-6 top-6 z-50 text-black/40 hover:text-black transition-colors md:mix-blend-difference md:text-white"
+                aria-label="Close modal"
               >
-                &times;
+                <X size={24} strokeWidth={1.2} />
               </button>
 
-              <div className="grid grid-cols-1 md:grid-cols-2">
-                <div className="relative min-h-[280px] md:min-h-[540px]">
-                  <img
-                    src="/img5.png"
-                    alt="Dry Down complimentary sample"
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
-                  <div className="absolute bottom-6 left-6 right-6">
-                    <p className="font-sans text-[10px] md:text-xs font-bold uppercase tracking-[0.35em] text-brand-accent">
-                      Complimentary Trial
-                    </p>
-                    <p className="font-serif text-3xl md:text-4xl text-white leading-tight mt-3">
-                      Experience Dry Down
-                    </p>
-                  </div>
+              {/* Left Side: Visual/Editorial */}
+              <div className="w-full md:w-1/2 relative min-h-[300px] md:min-h-full bg-neutral-100 overflow-hidden">
+                <motion.img
+                  initial={{ scale: 1.1 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 1.5 }}
+                  src="/img5.png"
+                  alt="Dry Down Sample"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <div className="absolute bottom-10 left-10 right-10">
+                  <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-amber-500 mb-2 block">
+                    Discovery Tier
+                  </span>
+                  <h2 className="text-white text-4xl md:text-5xl font-serif leading-none tracking-tighter">
+                    Scent as <br />
+                    An Identity.
+                  </h2>
                 </div>
+              </div>
 
-                <div className="p-6 md:p-10 text-brand-dark flex flex-col justify-center">
-                  <p className="font-sans text-[10px] font-bold uppercase tracking-[0.35em] text-brand-accent mb-4">
-                    First-Time Visitors
-                  </p>
-                  <h3
-                    id="sample-popup-title"
-                    className="font-serif text-3xl md:text-4xl leading-tight mb-4"
-                  >
-                    Claim your free fragrance sample.
+              {/* Right Side: Interaction */}
+              <div className="w-full md:w-1/2 p-10 md:p-20 flex flex-col justify-center bg-white">
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-neutral-400 mb-6 block">
+                    Limited Invitations
+                  </span>
+                  <h3 className="text-3xl md:text-4xl font-serif text-neutral-900 mb-6 leading-tight">
+                    Claim your complimentary <br />
+                    trial vial.
                   </h3>
-                  <p className="font-sans text-sm md:text-base opacity-70 leading-relaxed mb-8">
-                    Share your email or phone number and we will send your
-                    complimentary sample details, plus early access to upcoming
-                    Dry Down releases.
+                  <p className="text-neutral-500 text-sm md:text-base leading-relaxed mb-10 max-w-sm">
+                    Enter your details to receive our seasonal curation. No
+                    commitment, just an invitation to experience our dry down.
                   </p>
 
-                  <form onSubmit={handleSubscribe} className="flex flex-col gap-4">
-                    <input
-                      type="text"
-                      inputMode="text"
-                      autoComplete="email"
-                      placeholder="Email or phone number"
-                      value={contactValue}
-                      onChange={(e) => {
-                        setContactValue(e.target.value);
-                        if (formError) setFormError("");
-                      }}
-                      className="w-full px-5 py-4 bg-white border border-brand-dark/15 focus:border-brand-dark/50 outline-none font-sans text-brand-dark"
-                    />
-                    {formError ? (
-                      <p className="text-xs text-red-700 font-sans">{formError}</p>
-                    ) : (
-                      <p className="font-sans text-[11px] text-brand-dark/55">
-                        One complimentary sample per household.
+                  <form onSubmit={handleSubscribe} className="space-y-8">
+                    <div className="group relative">
+                      <input
+                        type="text"
+                        placeholder="Email or phone number"
+                        value={contactValue}
+                        onChange={(e) => {
+                          setContactValue(e.target.value);
+                          if (formError) setFormError("");
+                        }}
+                        className="w-full py-4 bg-transparent border-b border-neutral-200 outline-none font-sans text-sm tracking-wide focus:border-amber-500 transition-all duration-500 placeholder:text-neutral-300 text-neutral-800"
+                      />
+                      <div className="absolute bottom-0 left-0 h-[1px] w-0 bg-amber-500 transition-all duration-500 group-focus-within:w-full" />
+                    </div>
+
+                    {formError && (
+                      <p className="text-[10px] text-red-500 font-bold uppercase tracking-widest animate-pulse">
+                        {formError}
                       </p>
                     )}
+
                     <button
                       type="submit"
-                      className="w-full bg-brand-dark text-white px-8 py-4 font-sans font-bold text-xs uppercase tracking-[0.25em] hover:bg-brand-accent hover:text-brand-dark transition-colors shadow-lg mt-1"
+                      className="group relative w-full h-14 bg-black text-white text-[10px] font-bold uppercase tracking-[0.3em] overflow-hidden transition-all duration-500"
                     >
-                      Enter Now
+                      <span className="relative z-10">Secure Sample</span>
+                      <div className="absolute inset-0 bg-neutral-800 translate-y-full transition-transform duration-500 group-hover:translate-y-0" />
                     </button>
                   </form>
-                </div>
+
+                  <p className="mt-8 text-[9px] text-neutral-400 uppercase tracking-widest text-center md:text-left">
+                    *Ships within 5-7 business days globally.
+                  </p>
+                </motion.div>
               </div>
             </motion.div>
           </div>

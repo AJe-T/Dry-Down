@@ -1,10 +1,27 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { ProductProps } from "@/lib/products";
+import Image from "next/image";
+import {
+  AnimatePresence,
+  motion,
+  useMotionTemplate,
+  useMotionValue,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "framer-motion";
+import { products, type ProductProps } from "@/lib/products";
 import Link from "next/link";
-import React, { useRef, useState } from "react";
-import { Droplet, Wind, Leaf, Sparkles } from "lucide-react";
+import React, { useRef, useState, useEffect } from "react";
+import {
+  Droplet,
+  Wind,
+  Leaf,
+  Sparkles,
+  MoveRight,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import {
   Chart as ChartJS,
   RadialLinearScale,
@@ -25,14 +42,145 @@ ChartJS.register(
   Legend,
 );
 
+// --- Lightweight Luxury Animation Helpers ---
+const FadeIn = ({
+  children,
+  delay = 0,
+  className = "",
+  duration = 1.2,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+  duration?: number;
+}) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-10%" }}
+      transition={{ duration, delay, ease: [0.16, 1, 0.3, 1] }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+const StaggerContainer = ({
+  children,
+  className = "",
+  delayChildren = 0.2,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delayChildren?: number;
+}) => (
+  <motion.div
+    initial="hidden"
+    whileInView="visible"
+    viewport={{ once: true, margin: "-10%" }}
+    variants={{
+      hidden: { opacity: 0 },
+      visible: {
+        opacity: 1,
+        transition: { staggerChildren: 0.15, delayChildren },
+      },
+    }}
+    className={className}
+  >
+    {children}
+  </motion.div>
+);
+
+const StaggerItem = ({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => (
+  <motion.div
+    variants={{
+      hidden: { opacity: 0, y: 15 },
+      visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+      },
+    }}
+    className={className}
+  >
+    {children}
+  </motion.div>
+);
+
+const RevealLine = ({
+  delay = 0,
+  color = "bg-brand-dark/20",
+  className = "",
+}: {
+  delay?: number;
+  color?: string;
+  className?: string;
+}) => (
+  <motion.div
+    initial={{ scaleX: 0 }}
+    whileInView={{ scaleX: 1 }}
+    viewport={{ once: true }}
+    transition={{ duration: 1.5, delay, ease: [0.16, 1, 0.3, 1] }}
+    className={`h-[1px] w-full origin-left ${color} ${className}`}
+  />
+);
+
 export default function SingleProductClient({
   product,
 }: {
   product: ProductProps;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [rotateX, setRotateX] = useState(0);
-  const [rotateY, setRotateY] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const rotateX = useMotionValue(0);
+  const rotateY = useMotionValue(0);
+  const cardScale = useMotionValue(1);
+  const glareX = useMotionValue(50);
+  const glareY = useMotionValue(50);
+  const rotateXSpring = useSpring(rotateX, {
+    stiffness: 240,
+    damping: 26,
+    mass: 0.5,
+  });
+  const rotateYSpring = useSpring(rotateY, {
+    stiffness: 240,
+    damping: 26,
+    mass: 0.5,
+  });
+  const cardScaleSpring = useSpring(cardScale, {
+    stiffness: 260,
+    damping: 24,
+    mass: 0.45,
+  });
+  const glareBackground = useMotionTemplate`radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0) 58%)`;
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  });
+
+  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "12%"]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.35], [1, 0.18]);
+
+  const galleryAccentImage =
+    product.id === "burnt-sugar"
+      ? "/img5.png"
+      : product.id === "acid-bloom"
+        ? "/img6.png"
+        : "/img7.png";
+
+  const productGallery = Array.from(
+    new Set([product.image, product.imageUrl, galleryAccentImage]),
+  );
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
@@ -42,13 +190,29 @@ export default function SingleProductClient({
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    setRotateX(((y - centerY) / centerY) * -10);
-    setRotateY(((x - centerX) / centerX) * 10);
+    rotateX.set(((y - centerY) / centerY) * -6);
+    rotateY.set(((x - centerX) / centerX) * 6);
+    cardScale.set(1.02);
+    glareX.set((x / rect.width) * 100);
+    glareY.set((y / rect.height) * 100);
   };
 
   const handleMouseLeave = () => {
-    setRotateX(0);
-    setRotateY(0);
+    rotateX.set(0);
+    rotateY.set(0);
+    cardScale.set(1);
+    glareX.set(50);
+    glareY.set(50);
+  };
+
+  const handlePrevSlide = () => {
+    setCurrentSlide((prev) =>
+      prev === 0 ? productGallery.length - 1 : prev - 1,
+    );
+  };
+
+  const handleNextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % productGallery.length);
   };
 
   const parseNoteList = (value: string | undefined, fallback: string) =>
@@ -58,46 +222,34 @@ export default function SingleProductClient({
       .filter(Boolean);
 
   const topNotes = parseNoteList(product.topNotes, "Bergamot, Clary Sage");
-  const heartNotes = parseNoteList(product.heartNotes, "French Lavender, Orris Root");
+  const heartNotes = parseNoteList(
+    product.heartNotes,
+    "French Lavender, Orris Root",
+  );
   const baseNotes = parseNoteList(product.baseNotes, "Ash Wood, Tonka Bean");
+  const otherProducts = products
+    .filter((item) => item.id !== product.id)
+    .slice(0, 3);
+  const otherProductsGridClass =
+    otherProducts.length === 1
+      ? "grid-cols-1"
+      : otherProducts.length === 2
+        ? "grid-cols-1 md:grid-cols-2"
+        : "grid-cols-1 md:grid-cols-2 xl:grid-cols-3";
 
-  const featuredNotes = Array.from(
-    new Set([...topNotes, ...heartNotes, ...baseNotes]),
-  ).slice(0, 6);
+  useEffect(() => {
+    setCurrentSlide(0);
+  }, [product.id]);
 
-  const scentPyramid: {
-    title: string;
-    notes: string[];
-    widthClass: string;
-    icon: React.ReactNode;
-  }[] = [
-    {
-      title: "Top Notes",
-      notes: topNotes,
-      widthClass: "w-[68%]",
-      icon: <Sparkles className="w-4 h-4" />,
-    },
-    {
-      title: "Heart Notes",
-      notes: heartNotes,
-      widthClass: "w-[84%]",
-      icon: <Wind className="w-4 h-4" />,
-    },
-    {
-      title: "Base Notes",
-      notes: baseNotes,
-      widthClass: "w-full",
-      icon: <Leaf className="w-4 h-4" />,
-    },
-  ];
+  useEffect(() => {
+    if (productGallery.length < 2) return;
 
-  const getNoteInitials = (note: string) =>
-    note
-      .split(" ")
-      .map((part) => part[0] || "")
-      .join("")
-      .slice(0, 2)
-      .toUpperCase();
+    const interval = window.setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % productGallery.length);
+    }, 3200);
+
+    return () => window.clearInterval(interval);
+  }, [productGallery.length]);
 
   const chartData = {
     labels: ["Woody", "Floral", "Fresh", "Sweet", "Spicy"],
@@ -105,15 +257,18 @@ export default function SingleProductClient({
       {
         label: "Scent Notes",
         data: product.notes,
-        backgroundColor: `${product.colorHex}40`, // 40% opacity hex
+        backgroundColor: `${product.colorHex}25`, // Soft opacity
         borderColor: product.colorHex,
-        borderWidth: 2,
+        borderWidth: 1.5,
         pointBackgroundColor: product.bgColor
           .replace("bg-[", "")
-          .replace("]", ""), // Hacky way to get the solid color if needed, but colorHex is better
+          .replace("]", ""),
         pointBorderColor: "#fff",
         pointHoverBackgroundColor: "#fff",
         pointHoverBorderColor: product.colorHex,
+        pointRadius: 4,
+        pointBorderWidth: 2,
+        tension: 0.4, // Smooth curve
       },
     ],
   };
@@ -123,15 +278,16 @@ export default function SingleProductClient({
     maintainAspectRatio: false,
     scales: {
       r: {
-        angleLines: { color: "rgba(0,0,0,0.1)" },
-        grid: { color: "rgba(0,0,0,0.05)" },
+        angleLines: { color: "rgba(0,0,0,0.04)" },
+        grid: { color: "rgba(0,0,0,0.04)" },
         pointLabels: {
           font: {
             family: "var(--font-syne)",
             size: 11,
-            weight: 700 as const, // Type assertion since weight expects number or 'bold' but next.js types might complain
+            weight: 500 as const,
+            letterSpacing: "0.1em",
           },
-          color: "#1C2321",
+          color: "rgba(28, 35, 33, 0.7)",
         },
         ticks: { display: false, max: 100 },
       },
@@ -139,349 +295,544 @@ export default function SingleProductClient({
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: "#1C2321",
-        titleFont: { family: "var(--font-playfair)" },
-        bodyFont: { family: "var(--font-syne)" },
+        backgroundColor: "rgba(28, 35, 33, 0.95)",
+        titleFont: { family: "var(--font-playfair)", size: 14, weight: 600 },
+        bodyFont: {
+          family: "var(--font-syne)",
+          size: 12,
+          letterSpacing: "0.05em",
+        },
+        padding: 16,
+        cornerRadius: 4,
+        displayColors: false,
+        borderColor: "rgba(255,255,255,0.1)",
+        borderWidth: 1,
       },
     },
   };
 
   return (
-    <section className="min-h-screen pt-24 pb-24 px-6 bg-brand-base">
-      {/* Nav Breadcrumb */}
-      <div className="max-w-7xl mx-auto mb-10 font-sans text-xs font-bold uppercase tracking-[0.2em] opacity-60">
-        <Link href="/" className="hover:text-brand-accent transition-colors">
-          Home
-        </Link>{" "}
-        / <span className="text-brand-dark">Collection</span> / {product.name}
-      </div>
-
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch">
-        {/* Col 1: Visual (5 cols) */}
-        <div className="lg:col-span-5 h-[600px] lg:h-auto">
-          <div
-            className="relative h-full w-full overflow-hidden card-3d-container shadow-2xl rounded-sm border border-brand-dark/10"
-            ref={cardRef}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
+    <div
+      ref={containerRef}
+      className="bg-brand-base overflow-x-clip selection:bg-brand-dark selection:text-white"
+    >
+      {/* --- HERO SECTION --- */}
+      <section className="relative min-h-screen pt-6 pb-20 px-6 flex flex-col justify-center">
+        <motion.div
+          style={{ y: heroY, opacity: heroOpacity }}
+          className="max-w-7xl mx-auto w-full will-change-transform"
+        >
+          {/* Nav Breadcrumb */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+            className="mb-4 font-sans text-[10px] font-semibold uppercase tracking-[0.2em] opacity-60 flex items-center text-brand-dark"
           >
-            <div
-              className="card-3d absolute inset-0 w-full h-full flex items-center justify-center transition-transform duration-100 ease-linear"
-              style={{
-                background: product.imgGradient,
-                transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${rotateX || rotateY ? 1.05 : 1})`,
-              }}
+            <Link
+              href="/"
+              className="hover:text-brand-accent transition-colors duration-300"
             >
-              {/* Actual Bottle Image */}
-              <div className="relative w-full h-full flex items-center justify-center p-8">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-full object-contain drop-shadow-2xl"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+              Home
+            </Link>
+            <span className="mx-4 w-4 h-[1px] bg-brand-dark/30"></span>
+            <Link
+              href="/#collection"
+              className="hover:text-brand-accent transition-colors duration-300"
+            >
+              Collection
+            </Link>
+            <span className="mx-4 w-4 h-[1px] bg-brand-dark/30"></span>
+            <span className="text-brand-dark font-bold">{product.name}</span>
+          </motion.div>
 
-        {/* Col 2: Details (4 cols) */}
-        <div className="lg:col-span-4 flex flex-col justify-center fade-in delay-100 py-8">
-          <h1
-            className="font-serif font-bold text-5xl md:text-7xl mb-4 text-brand-dark leading-none"
-            style={{ color: product.colorHex }}
-          >
-            {product.name}
-          </h1>
-          <p
-            className="font-sans text-xs font-bold uppercase tracking-[0.3em] mb-8 opacity-60 border-l-2 pl-4"
-            style={{ borderColor: product.colorHex }}
-          >
-            {product.colorName}
-          </p>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 xl:gap-24 items-center">
+            {/* Visual Column */}
+            <div className="lg:col-span-5 h-[60vh] min-h-[500px] lg:h-[75vh] [perspective:1200px]">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
+                className="relative h-full w-full overflow-hidden rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.15)] group [transform-style:preserve-3d]"
+                ref={cardRef}
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+              >
+                <motion.div
+                  className="absolute inset-0 w-full h-full flex items-center justify-center will-change-transform"
+                  style={{
+                    background: product.imgGradient,
+                    rotateX: rotateXSpring,
+                    rotateY: rotateYSpring,
+                    scale: cardScaleSpring,
+                  }}
+                >
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.22),_transparent_48%)] opacity-70" />
+                  <motion.div
+                    className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none mix-blend-overlay"
+                    style={{ background: glareBackground }}
+                  />
 
-          <div className="mb-10 border border-brand-dark/10 bg-white/80 p-5 md:p-6 shadow-sm">
-            <p className="font-sans text-[10px] font-bold uppercase tracking-[0.3em] text-[#c87a55] mb-3">
-              The Scent Story
-            </p>
-            <h3 className="font-serif text-2xl md:text-3xl text-brand-dark mb-6">
-              Fragrance Pyramid
-            </h3>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-white/10" />
 
-            <div className="space-y-3">
-              {scentPyramid.map((tier) => (
-                <div key={tier.title} className={`${tier.widthClass} mx-auto`}>
-                  <div
-                    className="border border-brand-dark/10 bg-brand-base px-4 py-3 md:px-5 md:py-4 shadow-sm"
-                    style={{
-                      boxShadow: `0 10px 20px -18px ${product.colorHex}`,
-                    }}
-                  >
-                    <div className="flex items-center gap-2 mb-2 text-brand-dark">
-                      <span
-                        className="inline-flex items-center justify-center w-7 h-7 rounded-full text-white"
-                        style={{ backgroundColor: product.colorHex }}
+                  <div className="relative z-20 h-full w-full [transform:translateZ(24px)]">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={productGallery[currentSlide]}
+                        initial={{ opacity: 0, scale: 1.03 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.98 }}
+                        transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                        className="relative h-full w-full"
                       >
-                        {tier.icon}
-                      </span>
-                      <p className="font-sans text-[10px] font-bold uppercase tracking-[0.25em]">
-                        {tier.title}
+                        <Image
+                          src={productGallery[currentSlide]}
+                          alt={`${product.name} view ${currentSlide + 1}`}
+                          fill
+                          priority={currentSlide === 0}
+                          sizes="(max-width: 1024px) 100vw, 42vw"
+                          className="object-cover object-center transition-transform duration-700 group-hover:scale-[1.03]"
+                        />
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+
+                  {productGallery.length > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        aria-label={`Previous ${product.name} image`}
+                        onClick={handlePrevSlide}
+                        className="absolute inset-y-0 left-0 z-30 flex w-1/2 items-center justify-start bg-gradient-to-r from-black/28 via-black/12 to-transparent px-5 md:px-7 text-white/90 opacity-0 transition-all duration-300 hover:from-black/40 hover:via-black/18 hover:opacity-100 focus:opacity-100 group-hover:opacity-100"
+                      >
+                        <span className="flex h-12 w-12 -translate-x-2 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md transition-transform duration-300 group-hover:translate-x-0 hover:scale-105">
+                          <ChevronLeft className="h-5 w-5" strokeWidth={1.5} />
+                        </span>
+                      </button>
+
+                      <button
+                        type="button"
+                        aria-label={`Next ${product.name} image`}
+                        onClick={handleNextSlide}
+                        className="absolute inset-y-0 right-0 z-30 flex w-1/2 items-center justify-end bg-gradient-to-l from-black/28 via-black/12 to-transparent px-5 md:px-7 text-white/90 opacity-0 transition-all duration-300 hover:from-black/40 hover:via-black/18 hover:opacity-100 focus:opacity-100 group-hover:opacity-100"
+                      >
+                        <span className="flex h-12 w-12 translate-x-2 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md transition-transform duration-300 group-hover:translate-x-0 hover:scale-105">
+                          <ChevronRight className="h-5 w-5" strokeWidth={1.5} />
+                        </span>
+                      </button>
+                    </>
+                  )}
+
+                  <div className="absolute inset-x-0 bottom-0 z-30 flex flex-wrap items-end justify-between gap-4 p-6 md:p-8">
+                    <div className="rounded-full border border-white/20 bg-black/20 px-4 py-2 backdrop-blur-md">
+                      <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.32em] text-white/90">
+                        Auto Gallery
                       </p>
                     </div>
-                    <p className="font-sans text-xs md:text-sm text-brand-dark/80 leading-relaxed">
-                      {tier.notes.join(" / ")}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      {productGallery.map((image, index) => (
+                        <button
+                          key={image}
+                          type="button"
+                          aria-label={`View ${product.name} image ${index + 1}`}
+                          onClick={() => setCurrentSlide(index)}
+                          className={`h-2.5 rounded-full transition-all duration-500 ${
+                            currentSlide === index
+                              ? "w-8 bg-white"
+                              : "w-2.5 bg-white/40 hover:bg-white/70"
+                          }`}
+                        />
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                </motion.div>
+              </motion.div>
             </div>
-          </div>
 
-          <p className="font-sans text-brand-dark opacity-80 leading-relaxed mb-10 text-lg border-b border-gray-200 pb-10">
-            {product.description}
-          </p>
-
-          {/* Pros/Cons */}
-          <div className="grid grid-cols-2 gap-8 mb-10">
-            <div>
-              <h4 className="font-sans text-[10px] font-bold uppercase tracking-[0.2em] mb-4 text-green-800">
-                The Good
-              </h4>
-              <ul className="text-xs space-y-2 font-sans opacity-80">
-                {product.pros.map((p, i) => (
-                  <li key={i} className="flex gap-2">
-                    <span>+</span> {p}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-sans text-[10px] font-bold uppercase tracking-[0.2em] mb-4 text-red-900">
-                The Note
-              </h4>
-              <ul className="text-xs space-y-2 font-sans opacity-80">
-                {product.cons.map((c, i) => (
-                  <li key={i} className="flex gap-2">
-                    <span>-</span> {c}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center gap-6 border-t border-brand-dark/10 pt-8 mt-auto">
-            <div className="font-serif text-4xl text-brand-dark">
-              {product.price}
-            </div>
-            <button
-              className="w-full sm:w-auto flex-1 bg-brand-dark text-white px-8 py-4 font-sans text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-opacity shadow-lg"
-              style={{ backgroundColor: product.colorHex }}
-            >
-              Buy in Amazon
-            </button>
-          </div>
-        </div>
-
-        {/* Col 3: Data Analysis (3 cols) */}
-        <div
-          className="lg:col-span-3 flex flex-col justify-center bg-white p-8 shadow-xl border-t-8 h-full min-h-[500px]"
-          style={{ borderColor: product.colorHex }}
-        >
-          <div>
-            <h3 className="font-serif font-bold text-3xl mb-2 text-center text-brand-dark">
-              Olfactory Profile
-            </h3>
-            <p className="font-sans text-xs text-center opacity-50 mb-10 uppercase tracking-widest font-bold">
-              Scent Intensity Analysis
-            </p>
-          </div>
-
-          {/* CHART CONTAINER */}
-          <div className="chart-container flex-1 min-h-[300px] w-full relative">
-            <Radar data={chartData} options={chartOptions} />
-          </div>
-
-          <div className="mt-8">
-            <p className="font-sans text-[10px] font-bold uppercase tracking-[0.25em] mb-4 text-center text-brand-dark/60">
-              Featured Notes
-            </p>
-            <div className="grid grid-cols-1 gap-3">
-              {featuredNotes.map((note) => (
-                <div
-                  key={note}
-                  className="flex items-center gap-3 border border-brand-dark/10 bg-brand-base px-3 py-2"
-                >
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-[10px] font-sans font-bold tracking-wider text-white shadow-md"
+            {/* Details Column */}
+            <div className="lg:col-span-7 flex flex-col justify-center py-8">
+              <FadeIn delay={0.2}>
+                <div className="flex items-center gap-4 mb-8">
+                  <motion.span
+                    initial={{ width: 0 }}
+                    animate={{ width: 40 }}
+                    transition={{ duration: 1, delay: 0.5 }}
+                    className="h-[1px]"
                     style={{ backgroundColor: product.colorHex }}
-                  >
-                    {getNoteInitials(note)}
-                  </div>
-                  <p className="font-sans text-xs uppercase tracking-[0.16em] text-brand-dark/80">
-                    {note}
+                  />
+                  <p className="font-sans text-[10px] font-bold uppercase tracking-[0.3em] text-brand-dark/60">
+                    {product.colorName}
                   </p>
                 </div>
+                <h1
+                  className="font-serif font-light text-6xl md:text-[5rem] xl:text-[6rem] mb-12 text-brand-dark leading-[0.9] tracking-tighter"
+                  style={{ color: product.colorHex }}
+                >
+                  {product.name}
+                </h1>
+              </FadeIn>
+
+              <FadeIn delay={0.4}>
+                <p className="font-sans font-light text-brand-dark/70 leading-relaxed mb-12 text-lg md:text-xl relative max-w-2xl">
+                  {product.description}
+                </p>
+              </FadeIn>
+
+              {/* Pros/Cons */}
+              <FadeIn delay={0.6}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 mb-4">
+                  <div className="group">
+                    <h4 className="font-sans text-[9px] font-bold uppercase tracking-[0.3em] mb-6 text-brand-dark/50 flex items-center gap-3">
+                      <span className="w-1.5 h-1.5 rounded-full bg-green-700/40"></span>{" "}
+                      The Good
+                    </h4>
+                    <ul className="text-sm space-y-4 font-sans opacity-80 font-light">
+                      {product.pros.map((p, i) => (
+                        <li
+                          key={i}
+                          className="flex gap-4 leading-relaxed group-hover:text-brand-dark transition-colors duration-500"
+                        >
+                          <span className="text-green-800/50 font-serif italic">
+                            +
+                          </span>{" "}
+                          {p}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="group">
+                    <h4 className="font-sans text-[9px] font-bold uppercase tracking-[0.3em] mb-6 text-brand-dark/50 flex items-center gap-3">
+                      <span className="w-1.5 h-1.5 rounded-full bg-red-800/40"></span>{" "}
+                      The Note
+                    </h4>
+                    <ul className="text-sm space-y-4 font-sans opacity-80 font-light">
+                      {product.cons.map((c, i) => (
+                        <li
+                          key={i}
+                          className="flex gap-4 leading-relaxed group-hover:text-brand-dark transition-colors duration-500"
+                        >
+                          <span className="text-red-900/50 font-serif italic">
+                            -
+                          </span>{" "}
+                          {c}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </FadeIn>
+
+              <FadeIn
+                delay={0.8}
+                className="flex flex-col sm:flex-row items-center gap-10 mt-auto pt-8 border-t border-brand-dark/10"
+              >
+                <div className="font-serif font-light text-4xl text-brand-dark tracking-tight">
+                  {product.price}
+                </div>
+                <button
+                  className="group relative overflow-hidden text-white px-12 py-5 rounded-full font-sans text-[10px] font-bold uppercase tracking-[0.25em] transition-all duration-700 shadow-[0_15px_30px_-10px_rgba(0,0,0,0.2)] hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] hover:-translate-y-1 w-full sm:w-auto flex-1 max-w-sm"
+                  style={{ backgroundColor: product.colorHex }}
+                >
+                  <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-700 ease-[0.16,1,0.3,1]"></div>
+                  <span className="relative flex items-center justify-center gap-4">
+                    Acquire via Amazon{" "}
+                    <MoveRight className="w-4 h-4 group-hover:translate-x-2 transition-transform duration-500" />
+                  </span>
+                </button>
+              </FadeIn>
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* --- INGREDIENTS & SCENT PROFILE SECTION --- */}
+      <section className="relative py-32 bg-white/80 backdrop-blur-sm rounded-[3rem] shadow-[0_-20px_50px_rgba(0,0,0,0.02)] border-t border-brand-dark/5 mx-4 md:mx-10 my-10 z-10">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+          <FadeIn>
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
+              <div>
+                <p className="font-sans text-[10px] font-bold uppercase tracking-[0.3em] mb-4 text-brand-accent flex items-center gap-3">
+                  <Sparkles className="w-3 h-3" /> Olfactory Composition
+                </p>
+                <h2 className="font-serif font-light text-5xl md:text-6xl text-brand-dark tracking-tighter">
+                  The Scent Architecture
+                </h2>
+              </div>
+              <p className="font-sans text-sm font-light text-brand-dark/60 max-w-sm leading-relaxed">
+                A meticulous breakdown of the volatile compounds that define the
+                chronological experience of {product.name}.
+              </p>
+            </div>
+          </FadeIn>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 xl:gap-24 items-center">
+            {/* Left: Scent Notes */}
+            <div className="lg:col-span-6 space-y-12">
+              {[
+                {
+                  title: "Top Notes",
+                  notes: topNotes,
+                  color: "text-brand-dark/80",
+                  delay: 0.2,
+                },
+                {
+                  title: "Heart Notes",
+                  notes: heartNotes,
+                  color: "text-brand-dark/90",
+                  delay: 0.4,
+                },
+                {
+                  title: "Base Notes",
+                  notes: baseNotes,
+                  color: "text-brand-dark",
+                  delay: 0.6,
+                },
+              ].map((tier, idx) => (
+                <FadeIn key={idx} delay={tier.delay} className="group relative">
+                  <div className="flex flex-col gap-4">
+                    <h4 className="font-sans text-[10px] font-bold uppercase tracking-[0.3em] text-brand-dark/40 transition-colors group-hover:text-brand-dark">
+                      {tier.title}
+                    </h4>
+                    <div className="flex flex-wrap gap-4">
+                      {tier.notes.map((note, i) => (
+                        <motion.span
+                          key={i}
+                          whileHover={{ scale: 1.05, y: -2 }}
+                          className={`font-serif text-2xl md:text-3xl tracking-tight ${tier.color} transition-all duration-300 group-hover:drop-shadow-sm cursor-default`}
+                        >
+                          {note}
+                          {i < tier.notes.length - 1 && (
+                            <span className="opacity-30 mx-2 font-sans font-light">
+                              /
+                            </span>
+                          )}
+                        </motion.span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="mt-8">
+                    <RevealLine delay={tier.delay + 0.2} />
+                  </div>
+                </FadeIn>
               ))}
             </div>
-          </div>
 
-          <div className="mt-10 text-center border-t border-gray-100 pt-6">
-            <p className="font-sans text-[10px] italic opacity-60 uppercase tracking-widest leading-relaxed">
-              &quot;Analyzed via gas chromatography for note dominance.&quot;
-            </p>
-          </div>
-        </div>
-      </div>
+            {/* Right: Radar Chart Analysis */}
+            <div className="lg:col-span-6">
+              <FadeIn
+                delay={0.6}
+                className="bg-brand-base/50 p-10 md:p-14 rounded-[2rem] border border-brand-dark/5 relative overflow-hidden group"
+              >
+                {/* Subtle animated background gradient */}
+                <div
+                  className="absolute inset-0 opacity-10 transition-opacity duration-1000 group-hover:opacity-20"
+                  style={{
+                    background: `radial-gradient(circle at center, ${product.colorHex}, transparent 70%)`,
+                  }}
+                />
 
-      {/* ENGINEERING SECTION */}
-      <div className="max-w-7xl mx-auto mt-32">
-        <p className="font-sans text-[10px] font-bold uppercase tracking-[0.2em] mb-4 text-[#c87a55]">
-          The Engineering
-        </p>
-        <h2 className="font-serif font-bold text-5xl md:text-6xl text-brand-dark mb-6">
-          Beyond Conditioning
-        </h2>
-        <p className="font-sans text-brand-dark opacity-70 max-w-2xl text-sm leading-relaxed mb-16">
-          We&apos;ve re-imagined the molecular structure of fabric care to
-          provide a sensorial experience that lasts long after the wash.
-        </p>
+                <div className="relative z-10">
+                  <div className="flex justify-between items-center mb-10">
+                    <h3 className="font-serif font-light text-2xl text-brand-dark">
+                      Intensity Analysis
+                    </h3>
+                    <span className="font-sans text-[9px] uppercase tracking-widest text-brand-dark/40 border border-brand-dark/10 px-3 py-1 rounded-full">
+                      Gas Chromatography
+                    </span>
+                  </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-white p-10 rounded-3xl shadow-sm border border-brand-dark/5">
-            <div className="w-12 h-12 rounded-full bg-[#f8f0ec] text-[#c87a55] flex items-center justify-center mb-6">
-              <Droplet className="w-5 h-5" />
+                  <div className="w-full h-[300px] relative">
+                    <Radar data={chartData} options={chartOptions} />
+                  </div>
+                </div>
+              </FadeIn>
             </div>
-            <h3 className="font-sans font-bold text-lg text-brand-dark mb-4 drop-shadow-sm">
-              Bio-Soft Technology
-            </h3>
-            <p className="font-sans text-xs text-brand-dark opacity-60 leading-relaxed">
-              Plant-based surfactants that bond to natural fibers, creating a
-              microscopic layer of velvet-like softness.
-            </p>
-          </div>
-          <div className="bg-white p-10 rounded-3xl shadow-sm border border-brand-dark/5">
-            <div className="w-12 h-12 rounded-full bg-[#f8f0ec] text-[#c87a55] flex items-center justify-center mb-6">
-              <Wind className="w-5 h-5" />
-            </div>
-            <h3 className="font-sans font-bold text-lg text-brand-dark mb-4 drop-shadow-sm">
-              Breathable Scent
-            </h3>
-            <p className="font-sans text-xs text-brand-dark opacity-60 leading-relaxed">
-              Our micro-capsules are oxygen-activated, releasing warm notes of{" "}
-              {product.name.toLowerCase()} with every movement.
-            </p>
-          </div>
-          <div className="bg-white p-10 rounded-3xl shadow-sm border border-brand-dark/5">
-            <div className="w-12 h-12 rounded-full bg-[#f8f0ec] text-[#c87a55] flex items-center justify-center mb-6">
-              <Leaf className="w-5 h-5" />
-            </div>
-            <h3 className="font-sans font-bold text-lg text-brand-dark mb-4 drop-shadow-sm">
-              Earth Conscious
-            </h3>
-            <p className="font-sans text-xs text-brand-dark opacity-60 leading-relaxed">
-              Biodegradable, non-toxic, and packaged in our signature recycled
-              glass-inspired polymer.
-            </p>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* CRAFTED IN GRASSE */}
-      <div className="w-full mt-32 relative h-[500px] flex items-center">
-        <div className="absolute inset-0 z-0">
-          <img
-            src="/handImg.jpg"
-            alt="Crafted in Grasse"
-            className="w-full h-full object-cover filter brightness-[0.3]"
-          />
+      {/* --- ENGINEERING SECTION --- */}
+      <section className="max-w-[90rem] mx-auto py-32 px-6">
+        <FadeIn>
+          <div className="text-center mb-24 flex flex-col items-center">
+            <p className="font-sans text-xs font-bold uppercase tracking-widest mb-6 text-brand-accent flex items-center gap-4">
+              <span className="w-12 h-[2px] bg-brand-accent/40"></span>
+              The Engineering
+              <span className="w-12 h-[2px] bg-brand-accent/40"></span>
+            </p>
+            <h2 className="font-serif font-bold text-5xl md:text-6xl lg:text-7xl text-brand-dark mb-10 tracking-tight">
+              Beyond Conditioning
+            </h2>
+            <p className="font-sans text-brand-dark/70 font-light max-w-3xl mx-auto text-lg leading-relaxed">
+              We&apos;ve re-imagined the molecular structure of fabric care to
+              provide a sensorial experience that lasts long after the wash,
+              preserving both fiber and memory.
+            </p>
+          </div>
+        </FadeIn>
+
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+          {[
+            {
+              icon: <Droplet className="w-8 h-8 stroke-[1.5]" />,
+              title: "Bio-Soft Technology",
+              desc: "Plant-based surfactants bond to natural fibers, creating a microscopic layer of velvet-like softness without synthetic buildup.",
+            },
+            {
+              icon: <Wind className="w-8 h-8 stroke-[1.5]" />,
+              title: "Breathable Scent",
+              desc: `Oxygen-activated micro-capsules delicately release warm notes of ${product.name.toLowerCase()} with the simple friction of movement.`,
+            },
+            {
+              icon: <Leaf className="w-8 h-8 stroke-[1.5]" />,
+              title: "Earth Conscious",
+              desc: "Fully biodegradable, non-toxic formulations packaged elegantly in our signature recycled glass-inspired polymer vessels.",
+            },
+          ].map((feature, idx) => (
+            <StaggerItem key={idx}>
+              <div className="group relative h-full">
+                <div className="absolute inset-0 bg-white rounded-[3rem] shadow-[0_15px_40px_rgb(0,0,0,0.04)] border border-brand-dark/5 transition-transform duration-700 group-hover:-translate-y-3"></div>
+                <div className="relative p-12 lg:p-14 flex flex-col items-center text-center h-full">
+                  <div className="w-24 h-24 rounded-full bg-brand-base text-brand-accent flex items-center justify-center mb-10 relative">
+                    <motion.div
+                      className="absolute inset-0 rounded-full border-2 border-brand-accent/30 scale-110"
+                      whileHover={{ scale: 1.25, opacity: 0 }}
+                      transition={{ duration: 0.8 }}
+                    />
+                    {feature.icon}
+                  </div>
+                  <h3 className="font-sans font-bold text-sm tracking-widest uppercase text-brand-dark mb-6">
+                    {feature.title}
+                  </h3>
+                  <RevealLine delay={0.5 + idx * 0.1} />
+                  <p className="font-sans font-medium text-base text-brand-dark opacity-70 leading-relaxed mt-8">
+                    {feature.desc}
+                  </p>
+                </div>
+              </div>
+            </StaggerItem>
+          ))}
+        </StaggerContainer>
+      </section>
+
+      {/* --- CRAFTED IN GRASSE --- */}
+      <motion.section
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1.5 }}
+        className="w-full relative h-[70vh] min-h-[600px] flex items-center overflow-hidden rounded-[3rem] max-w-[90rem] mx-auto shadow-[0_30px_60px_rgba(0,0,0,0.15)] mb-32"
+      >
+        <div className="absolute inset-0 z-0 bg-brand-dark">
+          <motion.div
+            initial={{ scale: 1.1 }}
+            whileInView={{ scale: 1 }}
+            transition={{ duration: 25, ease: "linear" }}
+            className="absolute inset-0"
+          >
+            <Image
+              src="/handImg.jpg"
+              alt="Crafted in Grasse"
+              fill
+              sizes="100vw"
+              className="object-cover opacity-60 mix-blend-luminosity"
+            />
+          </motion.div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
         </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
-          <h2 className="text-white text-6xl md:text-8xl flex flex-col md:flex-row flex-wrap md:gap-6 leading-none select-none">
-            <span className="font-sans font-bold">CRAFTED IN</span>
-            <span
-              className="font-serif italic drop-shadow-lg"
-              style={{ color: product.colorHex }}
-            >
-              GRASSE
-            </span>
-          </h2>
-          <p className="mt-8 text-white/80 max-w-md font-sans text-sm leading-relaxed">
-            Every bottle is infused with perfume-grade essential oils, developed
-            in the fragrance capital of the world.
-          </p>
+        <div className="relative z-10 max-w-7xl mx-auto px-12 md:px-20 w-full text-center md:text-left">
+          <FadeIn>
+            <p className="font-sans text-xs font-bold uppercase tracking-[0.4em] text-white/60 mb-8">
+              Origin Story
+            </p>
+            <h2 className="text-white text-6xl md:text-7xl lg:text-[8rem] flex flex-col leading-[0.85] select-none tracking-tight font-serif font-bold mb-12">
+              <span className="opacity-95">CRAFTED IN</span>
+              <span
+                className="italic mt-4 drop-shadow-2xl"
+                style={{ color: product.colorHex }}
+              >
+                GRASSE
+              </span>
+            </h2>
+            <RevealLine
+              color="bg-white/40"
+              className="max-w-[10rem] mb-12 mx-auto md:mx-0"
+            />
+            <p className="text-white/90 max-w-lg font-sans font-medium text-lg leading-relaxed mx-auto md:mx-0">
+              Every formulation is infused with fine perfume-grade absolute
+              oils, meticulously developed and aged in the historic fragrance
+              capital of the world.
+            </p>
+          </FadeIn>
         </div>
-      </div>
+      </motion.section>
 
       {/* OLFACTORY JOURNEY */}
-      <div className="max-w-7xl mx-auto mt-32 px-6">
+      <div className="max-w-[90rem] mx-auto mt-32 px-6 mb-32 overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-          <div>
-            <p className="font-sans text-[10px] font-bold uppercase tracking-[0.2em] mb-4 text-[#c87a55]">
+          <FadeIn>
+            <p className="font-sans text-xs font-bold uppercase tracking-widest mb-6 text-brand-accent flex items-center gap-4">
+              <span className="w-12 h-[2px] bg-brand-accent/40"></span>
               The Olfactory Journey
             </p>
-            <h2 className="font-serif font-bold text-5xl md:text-6xl text-brand-dark mb-16">
+            <h2 className="font-serif font-bold text-5xl md:text-6xl lg:text-7xl text-brand-dark mb-20 tracking-tight">
               {product.name} Profile
             </h2>
 
-            <div className="space-y-10">
-              <div>
-                <div className="flex justify-between items-baseline mb-2">
-                  <h4 className="font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-brand-dark">
-                    Top Notes
-                  </h4>
-                  <span className="font-sans text-[10px] italic opacity-60 text-right max-w-[60%]">
-                    {topNotes.join(", ")}
-                  </span>
+            <div className="space-y-16">
+              {[
+                { title: "Top Notes", notes: topNotes, hovOp: 40 },
+                { title: "Heart Notes", notes: heartNotes, hovOp: 60 },
+                { title: "Base Notes", notes: baseNotes, hovOp: 100 },
+              ].map((tier, idx) => (
+                <div key={idx} className="group relative cursor-default">
+                  <div className="flex justify-between items-end mb-6">
+                    <h4 className="font-sans text-xs font-bold uppercase tracking-widest text-brand-dark group-hover:-translate-y-1 transition-transform duration-300">
+                      {tier.title}
+                    </h4>
+                    <span className="font-sans text-base font-medium italic opacity-70 text-right max-w-[60%] transition-all duration-300 group-hover:opacity-100 group-hover:-translate-y-1">
+                      {tier.notes.join(", ")}
+                    </span>
+                  </div>
+                  {/* Base line */}
+                  <div className="w-full h-[2px] bg-brand-dark/10 relative overflow-hidden">
+                    {/* Animated Fill Line */}
+                    <div
+                      className="absolute top-0 left-0 h-full w-0 group-hover:w-full transition-all duration-700 ease-out"
+                      style={{
+                        backgroundColor: product.colorHex,
+                        opacity: tier.hovOp / 100,
+                      }}
+                    />
+                  </div>
                 </div>
-                <div
-                  className="w-full h-[1px]"
-                  style={{ backgroundColor: product.colorHex }}
-                />
-              </div>
-              <div>
-                <div className="flex justify-between items-baseline mb-2">
-                  <h4 className="font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-brand-dark">
-                    Heart Notes
-                  </h4>
-                  <span className="font-sans text-[10px] italic opacity-60 text-right max-w-[60%]">
-                    {heartNotes.join(", ")}
-                  </span>
-                </div>
-                <div
-                  className="w-full h-[2px]"
-                  style={{ backgroundColor: product.colorHex }}
-                />
-              </div>
-              <div>
-                <div className="flex justify-between items-baseline mb-2">
-                  <h4 className="font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-brand-dark">
-                    Base Notes
-                  </h4>
-                  <span className="font-sans text-[10px] italic opacity-60 text-right max-w-[60%]">
-                    {baseNotes.join(", ")}
-                  </span>
-                </div>
-                <div
-                  className="w-full h-[3px]"
-                  style={{ backgroundColor: product.colorHex }}
-                />
-              </div>
+              ))}
             </div>
-          </div>
+          </FadeIn>
 
           {/* Right side circle visual */}
-          <div className="relative w-full aspect-square max-w-[500px] mx-auto flex items-center justify-center">
+          <FadeIn
+            delay={0.3}
+            className="relative w-full aspect-square max-w-[600px] mx-auto flex items-center justify-center overflow-hidden"
+          >
+            {/* Ambient Glow */}
+            {/* <div
+              className="absolute inset-20 rounded-full blur-[120px] opacity-20"
+              style={{ backgroundColor: product.colorHex }}
+            ></div> */}
+
             {/* Outer Circle Ring */}
             <motion.div
               animate={{ rotate: 360 }}
-              transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-4 rounded-full border border-dashed border-[#c87a55]/30"
+              transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-4 rounded-full border-2 border-dashed border-brand-dark/10"
             ></motion.div>
 
             {/* Optional Inner Ring */}
             <motion.div
               animate={{ rotate: -360 }}
-              transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-12 rounded-full border border-[#c87a55]/20 shadow-inner"
+              transition={{ duration: 70, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-16 rounded-full border border-brand-dark/[0.04]"
             ></motion.div>
 
             {/* Center text */}
@@ -489,120 +840,193 @@ export default function SingleProductClient({
               initial={{ scale: 0.8, opacity: 0 }}
               whileInView={{ scale: 1, opacity: 1 }}
               viewport={{ once: true }}
-              className="font-serif font-bold text-2xl text-brand-dark flex items-center gap-3 relative z-10 p-6 bg-brand-base rounded-full shadow-2xl"
+              transition={{ duration: 1.5, ease: "easeOut" }}
+              className="font-serif font-bold text-4xl text-brand-dark flex flex-col items-center gap-4 relative z-10 w-64 h-64 justify-center bg-white/90 backdrop-blur-xl rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.08)] border border-white"
             >
-              Pure
-              <span
-                className="w-4 h-4 rounded-full shadow-md"
-                style={{ backgroundColor: product.colorHex }}
-              ></span>
-              Fragrance
+              <span className="text-xs font-sans font-bold uppercase tracking-widest opacity-60 mb-1">
+                Essence
+              </span>
+              <div className="flex items-center gap-3">
+                <span className="opacity-90">Pure</span>
+                <span
+                  className="w-3 h-3 rounded-full shadow-inner"
+                  style={{ backgroundColor: product.colorHex }}
+                ></span>
+              </div>
             </motion.div>
 
             {/* Orbiting Icons */}
             <motion.div
               animate={{ rotate: 360 }}
-              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+              transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
               className="absolute inset-0 pointer-events-none"
             >
-              {/* Wind (Top Right) */}
-              <div className="absolute top-[8%] right-[25%] text-[#c87a55] drop-shadow-lg">
-                <motion.div
-                  animate={{ rotate: -360 }}
-                  transition={{
-                    duration: 30,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
+              {[
+                {
+                  icon: <Wind className="w-8 h-8 stroke-[1.5]" />,
+                  pos: "top-[10%] right-[18%]",
+                  delay: 0,
+                },
+                {
+                  icon: <Sparkles className="w-8 h-8 stroke-[1.5]" />,
+                  pos: "top-[44%] right-[4%]",
+                  delay: 1,
+                },
+                {
+                  icon: <Leaf className="w-8 h-8 stroke-[1.5]" />,
+                  pos: "bottom-[12%] left-[20%]",
+                  delay: 2,
+                },
+                {
+                  icon: <Droplet className="w-8 h-8 stroke-[1.5]" />,
+                  pos: "top-[50%] left-[4%] -translate-y-1/2",
+                  delay: 0.5,
+                },
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  className={`absolute ${item.pos} text-brand-accent/70 backdrop-blur-md bg-white/60 p-5 rounded-full border border-white/80 shadow-lg`}
                 >
                   <motion.div
-                    animate={{ y: [0, -10, 0] }}
+                    animate={{ rotate: -360 }}
                     transition={{
-                      duration: 4,
+                      duration: 40,
                       repeat: Infinity,
-                      ease: "easeInOut",
+                      ease: "linear",
                     }}
                   >
-                    <Wind className="w-8 h-8" />
+                    <motion.div
+                      animate={{ y: [0, -8, 0] }}
+                      transition={{
+                        duration: 4,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: item.delay,
+                      }}
+                    >
+                      {item.icon}
+                    </motion.div>
                   </motion.div>
-                </motion.div>
-              </div>
-
-              {/* Sparkles (Right) */}
-              <div className="absolute top-[50%] right-0 -translate-y-1/2 text-[#c87a55] drop-shadow-lg">
-                <motion.div
-                  animate={{ rotate: -360 }}
-                  transition={{
-                    duration: 30,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
-                >
-                  <motion.div
-                    animate={{ y: [0, -10, 0] }}
-                    transition={{
-                      duration: 5,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                      delay: 1,
-                    }}
-                  >
-                    <Sparkles className="w-8 h-8" />
-                  </motion.div>
-                </motion.div>
-              </div>
-
-              {/* Leaf (Bottom Left) */}
-              <div className="absolute bottom-[8%] left-[25%] text-[#c87a55] drop-shadow-lg">
-                <motion.div
-                  animate={{ rotate: -360 }}
-                  transition={{
-                    duration: 30,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
-                >
-                  <motion.div
-                    animate={{ y: [0, -8, 0] }}
-                    transition={{
-                      duration: 4.5,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                      delay: 2,
-                    }}
-                  >
-                    <Leaf className="w-8 h-8" />
-                  </motion.div>
-                </motion.div>
-              </div>
-
-              {/* Droplet (Left) */}
-              <div className="absolute top-[50%] left-0 -translate-y-1/2 text-[#c87a55] drop-shadow-lg">
-                <motion.div
-                  animate={{ rotate: -360 }}
-                  transition={{
-                    duration: 30,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
-                >
-                  <motion.div
-                    animate={{ y: [0, -12, 0] }}
-                    transition={{
-                      duration: 5.5,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                      delay: 0.5,
-                    }}
-                  >
-                    <Droplet className="w-8 h-8" />
-                  </motion.div>
-                </motion.div>
-              </div>
+                </div>
+              ))}
             </motion.div>
-          </div>
+          </FadeIn>
         </div>
       </div>
-    </section>
+
+      {otherProducts.length > 0 && (
+        <section className="relative py-28 border-t border-brand-dark/10 overflow-hidden">
+          <div className="absolute inset-x-0 top-0 h-48 bg-[radial-gradient(circle_at_top,_rgba(212,175,55,0.12),_transparent_70%)] pointer-events-none" />
+          <div className="max-w-[90rem] mx-auto px-6">
+            <FadeIn>
+              <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-14">
+                <div className="max-w-2xl">
+                  <p className="font-sans text-[10px] font-bold uppercase tracking-[0.34em] text-brand-accent mb-4">
+                    Other Products
+                  </p>
+                  <h2 className="font-serif text-5xl md:text-6xl text-brand-dark leading-[0.95] tracking-tight">
+                    Continue through the archive.
+                  </h2>
+                </div>
+                <p className="font-sans text-brand-dark/65 text-sm md:text-base leading-relaxed max-w-xl">
+                  Explore the rest of the collection through adjacent scent
+                  worlds, each composed with its own mood, texture, and fabric
+                  ritual.
+                </p>
+              </div>
+            </FadeIn>
+
+            <div className={`grid gap-8 ${otherProductsGridClass}`}>
+              {otherProducts.map((item, index) => {
+                const itemNotes = [
+                  ...parseNoteList(item.topNotes, "Bergamot, Clary Sage").slice(
+                    0,
+                    1,
+                  ),
+                  ...parseNoteList(
+                    item.heartNotes,
+                    "French Lavender, Orris Root",
+                  ).slice(0, 1),
+                  ...parseNoteList(item.baseNotes, "Ash Wood, Tonka Bean").slice(
+                    0,
+                    1,
+                  ),
+                ];
+
+                return (
+                  <FadeIn key={item.id} delay={index * 0.12}>
+                    <Link
+                      href={`/products/${item.id}`}
+                      className="group grid h-full min-h-[260px] overflow-hidden rounded-[2rem] border border-brand-dark/10 bg-white/80 backdrop-blur-sm shadow-[0_24px_60px_rgba(0,0,0,0.06)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_30px_70px_rgba(0,0,0,0.1)] md:grid-cols-[220px_1fr]"
+                    >
+                      <div
+                        className="relative min-h-[220px] overflow-hidden md:min-h-full"
+                        style={{ background: item.imgGradient }}
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-b from-white/15 via-transparent to-black/15" />
+                        <div className="absolute left-5 top-5 z-10 rounded-full border border-white/20 bg-black/10 px-4 py-2 backdrop-blur-sm">
+                          <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.28em] text-white/90">
+                            {item.colorName}
+                          </span>
+                        </div>
+                        <Image
+                          src={item.image}
+                          alt={item.name}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                          className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                        />
+                      </div>
+
+                      <div className="flex flex-1 flex-col p-6 md:p-7">
+                        <div className="flex items-center justify-between gap-4">
+                          <span className="font-sans text-[10px] font-bold uppercase tracking-[0.26em] text-brand-dark/40">
+                            Archive Selection
+                          </span>
+                          <span className="font-sans text-[10px] font-bold uppercase tracking-[0.22em] text-brand-dark/35">
+                            {item.size}
+                          </span>
+                        </div>
+
+                        <h3 className="mt-4 font-serif text-3xl font-light tracking-tight text-brand-dark">
+                          {item.name}
+                        </h3>
+                        <p className="mt-3 line-clamp-2 font-sans text-sm leading-relaxed text-brand-dark/65">
+                          {item.shortDesc}
+                        </p>
+
+                        <div className="mt-5 flex flex-wrap gap-2">
+                          {itemNotes.map((note) => (
+                            <span
+                              key={note}
+                              className="rounded-full border border-brand-dark/10 px-3 py-2 font-sans text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-dark/55"
+                            >
+                              {note}
+                            </span>
+                          ))}
+                        </div>
+
+                        <div className="mt-auto flex items-center justify-between border-t border-brand-dark/10 pt-5">
+                          <span className="font-serif text-2xl font-light text-brand-dark">
+                            {item.price}
+                          </span>
+                          <span className="font-sans text-[10px] font-bold uppercase tracking-[0.24em] text-brand-dark flex items-center gap-2 transition-all duration-300 group-hover:gap-4">
+                            View Product{" "}
+                            <MoveRight
+                              className="w-4 h-4"
+                              strokeWidth={1.25}
+                            />
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  </FadeIn>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+    </div>
   );
 }

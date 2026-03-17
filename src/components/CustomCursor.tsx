@@ -11,8 +11,8 @@ export default function CustomCursor() {
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
 
-  // Smooth out the movement using spring physics to give it a liquid/luxurious feel
-  const springConfig = { damping: 30, stiffness: 200, mass: 0.5 };
+  // Keep the cursor responsive with a tighter spring so it tracks the pointer faster.
+  const springConfig = { damping: 20, stiffness: 650, mass: 0.2 };
   const cursorXSpring = useSpring(cursorX, springConfig);
   const cursorYSpring = useSpring(cursorY, springConfig);
 

@@ -22,5 +22,5 @@ export default async function ProductPage({
     notFound();
   }
 
-  return <SingleProductClient product={product} />;
+  return <SingleProductClient key={product.id} product={product} />;
 }

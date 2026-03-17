@@ -1,103 +1,286 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { products, ProductProps } from "@/lib/products";
+import { products, type ProductProps } from "@/lib/products";
 import Link from "next/link";
-import React, { useRef, useState } from "react";
+import Image from "next/image";
+import React, { useRef, useState, useEffect } from "react";
+import { Wind, Layers, Zap, MoveRight } from "lucide-react";
 
-// Helper component for the 3D Tilt Effect
+function useOnScreen(ref: React.RefObject<Element | null>) {
+  const [isIntersecting, setIntersecting] = useState(false);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIntersecting(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 },
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [ref]);
+  return isIntersecting;
+}
 
-function TiltCard({
+const FadeIn = ({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const isVisible = useOnScreen(ref);
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-1000 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"} ${className}`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+};
+
+const ProductCard = ({
   product,
   index,
 }: {
   product: ProductProps;
   index: number;
-}) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [rotateX, setRotateX] = useState(0);
-  const [rotateY, setRotateY] = useState(0);
+}) => {
+  return (
+    <FadeIn delay={index * 200} className="h-full">
+      <Link
+        href={`/products/${product.id}`}
+        className="group relative cursor-pointer flex flex-col h-full"
+      >
+        <div className="aspect-[3/4] w-full relative overflow-hidden bg-neutral-100 transition-all duration-1000">
+          <div
+            className="absolute inset-0 opacity-90 transition-transform duration-[1.5s] ease-out group-hover:scale-110"
+            style={{ background: product.imgGradient }}
+          ></div>
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
+          <div className="absolute inset-0">
+            <Image
+              src={product.image}
+              alt={product.name}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-cover mix-blend-multiply opacity-85 transition-transform duration-700 group-hover:scale-105"
+            />
+          </div>
 
-    // Max 10deg rotation
-    setRotateX(((y - centerY) / centerY) * -10);
-    setRotateY(((x - centerX) / centerX) * 10);
-  };
+          <div className="absolute inset-0 flex items-end p-6 bg-gradient-to-t from-black/40 via-black/10 to-transparent">
+            <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.35em] text-white/90">
+              Signature Formula
+            </p>
+          </div>
+        </div>
 
-  const handleMouseLeave = () => {
-    setRotateX(0);
-    setRotateY(0);
-  };
+        <div className="pt-8 pb-4 flex-grow flex flex-col transition-transform duration-500 group-hover:translate-x-2">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div
+                className="h-3 w-3 rounded-full shadow-sm"
+                style={{ backgroundColor: product.colorHex }}
+              ></div>
+              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-neutral-500">
+                {product.colorName}
+              </span>
+            </div>
+            <span className="text-[10px] font-medium uppercase tracking-widest text-neutral-400">
+              {product.size}
+            </span>
+          </div>
+          <h3 className="text-3xl font-serif font-light text-neutral-900 mb-3 tracking-tight">
+            {product.name}
+          </h3>
+          <p className="font-sans text-sm text-neutral-500 line-clamp-2 leading-relaxed font-light mb-6 flex-grow transition-colors duration-500 group-hover:text-neutral-700">
+            {product.shortDesc}
+          </p>
+
+          <div className="flex items-center justify-between mt-auto pt-6 border-t border-neutral-200">
+            <span className="text-sm font-medium text-neutral-900">
+              {product.price}
+            </span>
+            <span className="font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-neutral-900 flex items-center gap-2 transition-all duration-300 group-hover:gap-4">
+              Discover <MoveRight strokeWidth={1} className="w-4 h-4" />
+            </span>
+          </div>
+        </div>
+      </Link>
+    </FadeIn>
+  );
+};
+
+const getPreviewNotes = (value?: string) =>
+  (value || "")
+    .split(",")
+    .map((note) => note.trim())
+    .filter(Boolean)
+    .slice(0, 3);
+
+const ArchivePanelCard = ({
+  product,
+  index,
+}: {
+  product: ProductProps;
+  index: number;
+}) => {
+  const notes = [
+    ...getPreviewNotes(product.topNotes).slice(0, 2),
+    ...getPreviewNotes(product.baseNotes).slice(0, 1),
+  ];
 
   return (
     <Link
       href={`/products/${product.id}`}
-      className="group block cursor-pointer"
+      className="group flex h-full flex-col overflow-hidden rounded-[2rem] border border-brand-dark/10 bg-white shadow-[0_24px_60px_rgba(0,0,0,0.06)]"
     >
       <div
-        ref={cardRef}
-        className="relative h-[400px] w-full bg-gray-200 overflow-hidden mb-6 card-3d-container shadow-sm border border-brand-dark/5"
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
+        className="relative aspect-[4/5] overflow-hidden"
+        style={{ background: product.imgGradient }}
       >
-        <motion.div
-          className="card-3d absolute inset-0 w-full h-full flex items-center justify-center transition-transform duration-100 ease-linear"
-          style={{
-            background: product.imgGradient,
-            rotateX: rotateX,
-            rotateY: rotateY,
-            scale: rotateX || rotateY ? 1.05 : 1,
-          }}
-        >
-          {/* Abstract background number */}
-          <div className="absolute top-4 left-4 text-white text-8xl font-serif opacity-20 group-hover:opacity-40 transition-opacity">
-            0{index}
-          </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-black/10" />
+        <div className="absolute left-5 top-5 rounded-full border border-white/20 bg-black/10 px-4 py-2 backdrop-blur-sm">
+          <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.28em] text-white/90">
+            Variant 02
+          </span>
+        </div>
+        <Image
+          src={product.image}
+          alt={product.name}
+          fill
+          sizes="(max-width: 768px) 100vw, 33vw"
+          className="object-contain p-8 transition-transform duration-700 group-hover:scale-105"
+        />
+      </div>
 
-          {/* Image Representation */}
-          <div className="absolute inset-0 z-0 opacity-40 mix-blend-overlay">
-            <img
-              src={product.imageUrl}
-              alt={product.name}
-              className="w-full h-full object-cover"
-            />
-          </div>
-
-          {/* Abstract Bottle Shape representing the product */}
-          <div className="absolute bottom-10 left-0 w-full flex justify-center z-10">
-            <div className="w-32 h-48 border-2 border-white/40 rounded-t-full backdrop-blur-md bg-white/10 shadow-lg flex items-center justify-center relative overflow-hidden">
-              <span className="text-white font-serif tracking-widest text-lg opacity-80 rotate-[-90deg] whitespace-nowrap drop-shadow-md">
-                {product.name}
-              </span>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Hover label */}
-        <div className="absolute top-4 right-4 bg-white/90 text-brand-dark font-sans text-xs font-bold px-3 py-1 uppercase rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-20">
-          View Details
+      <div className="flex flex-1 flex-col p-6">
+        <div className="flex items-center justify-between">
+          <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.26em] text-brand-dark/40">
+            {`0${index + 1}`}
+          </span>
+          <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-dark/35">
+            {product.price}
+          </span>
+        </div>
+        <h4 className="mt-4 font-serif text-3xl font-light tracking-tight text-brand-dark">
+          {product.name}
+        </h4>
+        <p className="mt-3 font-sans text-sm leading-relaxed text-brand-dark/60">
+          {product.shortDesc}
+        </p>
+        <div className="mt-6 flex flex-wrap gap-2">
+          {notes.map((note) => (
+            <span
+              key={note}
+              className="rounded-full border border-brand-dark/10 px-3 py-2 font-sans text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-dark/55"
+            >
+              {note}
+            </span>
+          ))}
+        </div>
+        <div className="mt-auto flex items-center justify-between border-t border-brand-dark/10 pt-6">
+          <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-brand-dark/40">
+            {product.colorName}
+          </span>
+          <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-brand-dark flex items-center gap-2 transition-all duration-300 group-hover:gap-4">
+            View Product <MoveRight strokeWidth={1.25} className="h-4 w-4" />
+          </span>
         </div>
       </div>
-      <h3 className="font-serif text-2xl mb-1 group-hover:text-brand-accent transition-colors">
-        {product.name}
-      </h3>
-      <p className="font-sans text-[10px] font-bold uppercase opacity-50 tracking-widest">
-        {product.colorName}
-      </p>
     </Link>
   );
-}
+};
+
+const ArchiveFramedCard = ({
+  product,
+  index,
+}: {
+  product: ProductProps;
+  index: number;
+}) => {
+  const notes = [
+    ...getPreviewNotes(product.topNotes).slice(0, 1),
+    ...getPreviewNotes(product.heartNotes).slice(0, 1),
+    ...getPreviewNotes(product.baseNotes).slice(0, 1),
+  ];
+
+  return (
+    <Link
+      href={`/products/${product.id}`}
+      className="group relative flex h-full flex-col overflow-hidden rounded-[2rem] border border-white/10 bg-brand-dark p-6 text-brand-base shadow-[0_24px_50px_rgba(0,0,0,0.12)]"
+    >
+      <div
+        className="absolute inset-0 opacity-20 transition-opacity duration-500 group-hover:opacity-30"
+        style={{
+          background: `radial-gradient(circle at top, ${product.colorHex}, transparent 65%)`,
+        }}
+      />
+      <div className="relative z-10">
+        <div className="flex items-center justify-between">
+          <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.28em] text-brand-accent">
+            Variant 03
+          </span>
+          <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-white/40">
+            {`0${index + 1}`}
+          </span>
+        </div>
+
+        <div
+          className="relative mt-6 overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/5"
+          style={{ background: product.imgGradient }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-white/15 via-transparent to-black/20" />
+          <div className="relative aspect-[3/4]">
+            <Image
+              src={product.image}
+              alt={product.name}
+              fill
+              sizes="(max-width: 768px) 100vw, 33vw"
+              className="object-contain p-8 transition-transform duration-700 group-hover:scale-105"
+            />
+          </div>
+        </div>
+
+        <h4 className="mt-6 font-serif text-3xl font-light tracking-tight text-white">
+          {product.name}
+        </h4>
+        <p className="mt-4 font-sans text-sm leading-relaxed text-white/70">
+          {product.shortDesc}
+        </p>
+        <div className="mt-6 flex flex-wrap gap-2">
+          {notes.map((note) => (
+            <span
+              key={note}
+              className="rounded-full border border-white/15 bg-white/5 px-3 py-2 font-sans text-[10px] font-semibold uppercase tracking-[0.22em] text-white/75"
+            >
+              {note}
+            </span>
+          ))}
+        </div>
+        <div className="mt-8 flex items-center justify-between border-t border-white/10 pt-5">
+          <span className="font-serif text-2xl font-light text-white">
+            {product.price}
+          </span>
+          <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-white flex items-center gap-2 transition-all duration-300 group-hover:gap-4">
+            Open Detail <MoveRight strokeWidth={1.25} className="h-4 w-4" />
+          </span>
+        </div>
+      </div>
+    </Link>
+  );
+};
 
 export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const collectionProducts = products.filter((p) => p.id !== "starter");
 
   const faqs = [
     {
@@ -136,9 +319,7 @@ export default function Home() {
 
   return (
     <div className="bg-brand-base text-brand-dark w-full overflow-x-hidden">
-      {/* HERO SECTION */}
       <section className="relative h-screen w-full flex flex-col justify-center items-center overflow-hidden bg-brand-base">
-        {/* Background Visuals */}
         <div className="absolute inset-0 z-0">
           <video
             autoPlay
@@ -149,11 +330,10 @@ export default function Home() {
           >
             <source src="/hero1.mp4" type="video/mp4" />
           </video>
-          {/* Dark Overlay for better text readability */}
+
           <div className="absolute inset-0 bg-black/40"></div>
         </div>
 
-        {/* Pulse Effect */}
         <div className="absolute inset-0 z-0 opacity-20 mix-blend-overlay pointer-events-none text-white">
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand-accent rounded-full blur-[120px] animate-pulse"></div>
         </div>
@@ -172,14 +352,6 @@ export default function Home() {
             couture fragrance.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {/* 
-            <Link
-              href="/starter"
-              className="bg-brand-dark text-white px-8 py-4 rounded-none font-sans font-bold uppercase tracking-wider hover:bg-brand-accent transition-colors shadow-xl text-xs"
-            >
-              Shop Starter Pack
-            </Link>
-            */}
             <Link
               href="#collection"
               className="border-2 border-white text-white px-8 py-4 rounded-none font-sans font-bold uppercase tracking-wider hover:bg-white hover:text-brand-dark transition-colors text-xs text-center"
@@ -188,94 +360,165 @@ export default function Home() {
             </Link>
           </div>
         </div>
+      </section>
 
-        {/* Scrolling Marquee */}
-        <div className="absolute bottom-10 left-0 w-full overflow-hidden bg-brand-dark text-brand-base py-3 transform -rotate-1 shadow-2xl">
-          <div className="animate-marquee whitespace-nowrap flex font-sans font-black text-2xl uppercase tracking-widest">
-            <span className="mx-4">
-              DEEP CARE &bull; 25 PREMIUM WASHES &bull; LUXURY FRAGRANCE &bull;
-              CLEAN WEAR &bull; LASTING SCENT &bull;
-            </span>
-            <span className="mx-4">
-              DEEP CARE &bull; 25 PREMIUM WASHES &bull; LUXURY FRAGRANCE &bull;
-              CLEAN WEAR &bull; LASTING SCENT &bull;
-            </span>
-            <span className="mx-4">
-              DEEP CARE &bull; 25 PREMIUM WASHES &bull; LUXURY FRAGRANCE &bull;
-              CLEAN WEAR &bull; LASTING SCENT &bull;
-            </span>
+      <section className="border-y border-neutral-200 bg-white">
+        <div className="mx-auto max-w-[1400px] grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-neutral-200">
+          <FadeIn delay={100}>
+            <div className="p-16 h-full flex flex-col items-center text-center group hover:bg-neutral-50 transition-colors duration-700">
+              <Wind
+                strokeWidth={1}
+                className="w-10 h-10 mb-8 text-neutral-400 group-hover:-translate-y-2 transition-transform duration-700 ease-out"
+              />
+              <h4 className="font-sans text-sm font-semibold uppercase tracking-[0.2em] mb-4">
+                Extended Sillage
+              </h4>
+              <p className="font-sans text-sm text-neutral-500 font-light leading-relaxed max-w-xs">
+                Proprietary encapsulation releases complex olfactory notes over
+                14 days of wear.
+              </p>
+            </div>
+          </FadeIn>
+          <FadeIn delay={300}>
+            <div className="p-16 h-full flex flex-col items-center text-center group hover:bg-neutral-50 transition-colors duration-700">
+              <Layers
+                strokeWidth={1}
+                className="w-10 h-10 mb-8 text-neutral-400 group-hover:-translate-y-2 transition-transform duration-700 ease-out"
+              />
+              <h4 className="font-sans text-sm font-semibold uppercase tracking-[0.2em] mb-4">
+                Textile Integrity
+              </h4>
+              <p className="font-sans text-sm text-neutral-500 font-light leading-relaxed max-w-xs">
+                PH-neutral architecture relaxes fibers to prevent structural
+                damage on delicate knits.
+              </p>
+            </div>
+          </FadeIn>
+          <FadeIn delay={500}>
+            <div className="p-16 h-full flex flex-col items-center text-center group hover:bg-neutral-50 transition-colors duration-700">
+              <Zap
+                strokeWidth={1}
+                className="w-10 h-10 mb-8 text-neutral-400 group-hover:-translate-y-2 transition-transform duration-700 ease-out"
+              />
+              <h4 className="font-sans text-sm font-semibold uppercase tracking-[0.2em] mb-4">
+                Concentrated Yield
+              </h4>
+              <p className="font-sans text-sm text-neutral-500 font-light leading-relaxed max-w-xs">
+                Dense 750ml formulations providing up to 25 premium washes per
+                vessel.
+              </p>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      <section id="collection" className="py-40 px-8 md:px-12">
+        <div className="mx-auto max-w-[1400px]">
+          <FadeIn>
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-12">
+              <div className="max-w-2xl">
+                <h2 className="text-5xl md:text-6xl font-serif font-light mb-8 tracking-tight">
+                  The Permanent Archive
+                </h2>
+                <p className="text-lg text-neutral-500 font-light leading-relaxed">
+                  Our signature olfactory profiles, meticulously designed in
+                  Grasse. Each formula dictates a specific mood and honors a
+                  specific garment archetype.
+                </p>
+              </div>
+            </div>
+          </FadeIn>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-16">
+            {products.map((product, index) => (
+              <ProductCard
+                key={product.id}
+                index={index}
+                product={product}
+              />
+            ))}
+          </div>
+
+          <div className="mt-24 border-t border-brand-dark/10 pt-16">
+            <FadeIn>
+              <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+                <div className="max-w-2xl">
+                  <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.34em] text-brand-accent">
+                    Alternate Archive Variants
+                  </p>
+                  <h3 className="mt-4 font-serif text-4xl md:text-5xl font-light tracking-tight text-brand-dark">
+                    The same section, reimagined in different UIs.
+                  </h3>
+                </div>
+                <p className="max-w-xl font-sans text-sm leading-relaxed text-brand-dark/60">
+                  Each option below keeps the same three product cards and the
+                  same product-page navigation, just with different visual
+                  treatments so you can pick the one you like best.
+                </p>
+              </div>
+            </FadeIn>
+
+            <div className="mt-12">
+              <FadeIn>
+                <div className="mb-8 flex items-center justify-between gap-4">
+                  <div>
+                    <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.3em] text-brand-accent">
+                      Variant 02
+                    </p>
+                    <h4 className="mt-3 font-serif text-3xl font-light tracking-tight text-brand-dark">
+                      Editorial Panels
+                    </h4>
+                  </div>
+                  <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-brand-dark/35">
+                    3 Cards / Linked
+                  </span>
+                </div>
+              </FadeIn>
+
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
+                {products.map((product, index) => (
+                  <FadeIn key={product.id} delay={index * 120}>
+                    <ArchivePanelCard product={product} index={index} />
+                  </FadeIn>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-16">
+              <FadeIn>
+                <div className="mb-8 flex items-center justify-between gap-4">
+                  <div>
+                    <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.3em] text-brand-accent">
+                      Variant 03
+                    </p>
+                    <h4 className="mt-3 font-serif text-3xl font-light tracking-tight text-brand-dark">
+                      Framed Dark Cards
+                    </h4>
+                  </div>
+                  <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-brand-dark/35">
+                    3 Cards / Linked
+                  </span>
+                </div>
+              </FadeIn>
+
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+                {products.map((product, index) => (
+                  <FadeIn key={product.id} delay={index * 120}>
+                    <ArchiveFramedCard product={product} index={index} />
+                  </FadeIn>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* PRODUCTS OVERVIEW GRID */}
-      <section
-        id="collection"
-        className="py-32 px-6 max-w-7xl mx-auto scroll-mt-20"
-      >
-        <div className="mb-16 text-center">
-          <p className="font-sans font-bold text-xs uppercase tracking-[0.3em] mb-4 text-brand-accent">
-            The Collection
-          </p>
-          <h2 className="font-serif text-5xl md:text-6xl text-brand-dark">
-            Curated Wash Cycles
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-8">
-          {collectionProducts.map((p, index) => (
-            <TiltCard key={p.id} product={p} index={index + 1} />
-          ))}
-        </div>
-      </section>
-
-      {/* STARTER PACK TEASER SECTION */}
-      {/*
-      <section className="relative py-32 bg-brand-dark text-white overflow-hidden border-t border-brand-dark/10">
-        <div className="absolute inset-0 z-0 opacity-40">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover filter brightness-[0.6] contrast-[1.2]"
-          >
-            <source
-              src="https://videos.pexels.com/video-files/5867946/5867946-uhd_2560_1440_24fps.mp4"
-              type="video/mp4"
-            />
-          </video>
-        </div>
-        <div className="absolute inset-0 bg-brand-dark/50 mix-blend-multiply z-0"></div>
-        <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
-          <p className="font-sans font-bold text-xs uppercase tracking-[0.3em] mb-4 text-brand-accent drop-shadow-sm">
-            The Complete Experience
-          </p>
-          <h2 className="font-serif text-5xl md:text-7xl font-bold mb-8 shadow-black/50 drop-shadow-xl">
-            The Discovery Set.
-          </h2>
-          <p className="font-sans text-lg md:text-xl opacity-90 max-w-2xl mx-auto mb-10 drop-shadow-md leading-relaxed">
-            Experience our entire fragrance wardrobe before committing to a full vessel. 
-            Four signature wash cycles, elegantly packaged for the discerning individual.
-          </p>
-          <Link
-            href="/starter"
-            className="inline-block bg-brand-accent text-brand-dark px-8 py-4 font-sans font-bold uppercase tracking-wider hover:bg-white transition-colors shadow-2xl text-xs"
-          >
-            Unlock the Collection
-          </Link>
-        </div>
-      </section>
-      */}
-
-      {/* THE LABORATORY SECTION (img6, img7) */}
       <section
         ref={labRef}
         className="py-32 bg-brand-base overflow-hidden border-t border-brand-dark/10"
       >
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-            {/* Left side text and small image */}
             <div>
               <p className="font-sans font-bold text-xs uppercase tracking-[0.3em] mb-4 text-brand-accent">
                 The Laboratory
@@ -290,26 +533,29 @@ export default function Home() {
                 formulations that deeply nourish every weave.
               </p>
               <div className="relative w-3/4 max-w-sm h-[400px] shadow-2xl rounded-tr-3xl rounded-bl-3xl overflow-hidden border border-brand-dark/10">
-                <img
+                <Image
                   src="/img6.png"
                   className="w-full  h-full object-cover filter brightness-90"
                   alt="Laboratory Details"
+                  fill
+                  sizes="(max-width: 768px) 75vw, 384px"
                 />
               </div>
             </div>
 
-            {/* Right side Parallax image */}
             <div className="relative h-[400px] md:h-[700px] w-full rounded-t-[100px] rounded-b-[100px] md:rounded-t-full md:rounded-b-full overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-brand-dark/5">
               <motion.div
                 className="absolute inset-0 w-full h-[140%]"
                 style={{ y: labImageY, scale: labImageScale }}
               >
-                <img
+                <Image
                   src="/img7.png"
                   className="w-full h-full object-cover filter contrast-[1.1]"
                   alt="Innovation Process"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
                 />
-                {/* Dark Overlay gradient for a luxury feel */}
+
                 <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/40 to-transparent"></div>
               </motion.div>
               <div className="absolute bottom-12 md:bottom-16 left-0 right-0 text-center z-10">
@@ -322,7 +568,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ETHOS / VIDEO SIMULATION */}
       <section className="py-40 bg-brand-dark text-brand-base relative overflow-hidden">
         <div className="absolute inset-0 opacity-40">
           <video
@@ -349,39 +594,39 @@ export default function Home() {
         </div>
       </section>
 
-      {/* PARALLAX RITUAL SECTION */}
       <section
         ref={campaignRef}
         id="campaign-section"
         className="relative w-full py-20 px-6 md:px-0 md:py-0 md:min-h-[150vh] bg-brand-base flex flex-col md:flex-row items-center justify-center overflow-hidden border-y border-brand-dark/10"
       >
-        {/* Left Floating Element (Moves UP on scroll - Desktop Only) */}
         <motion.div
           style={{ y: leftMove }}
           className="hidden md:block absolute left-[-10%] md:left-[5%] top-[10%] w-64 md:w-[400px] z-20 will-change-transform"
         >
           <div className="w-full h-[600px] bg-brand-dark/5 border border-brand-dark/10 backdrop-blur-md rounded-t-full flex items-center justify-center shadow-2xl relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-b from-brand-dark/10 to-transparent z-10 pointer-events-none"></div>
-            <img
+            <Image
               src="/handImg.jpg"
               alt="Ritual Left"
               className="w-full h-full object-cover"
+              fill
+              sizes="(max-width: 768px) 100vw, 400px"
             />
           </div>
         </motion.div>
 
-        {/* Left Image (Mobile Only) */}
         <div className="md:hidden w-full max-w-sm mx-auto mb-12 z-20">
           <div className="w-full h-[400px] bg-brand-dark/5 border border-brand-dark/10 backdrop-blur-md rounded-t-[100px] flex items-center justify-center shadow-2xl relative overflow-hidden">
-            <img
+            <Image
               src="/handImg.jpg"
               alt="Ritual Left Mobile"
               className="w-full h-full object-cover"
+              fill
+              sizes="100vw"
             />
           </div>
         </div>
 
-        {/* Center Typography */}
         <div className="relative z-10 text-center max-w-3xl px-0 md:px-6">
           <p className="font-sans font-bold text-xs uppercase tracking-[0.3em] mb-4 md:mb-6 text-brand-accent">
             The Ritual
@@ -395,34 +640,35 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Right Floating Element (Moves DOWN on scroll - Desktop Only) */}
         <motion.div
           style={{ y: rightMove }}
           className="hidden md:block absolute right-[-10%] md:right-[5%] bottom-[10%] w-64 md:w-[400px] z-20 will-change-transform"
         >
           <div className="w-full h-[600px] bg-brand-accent/10 border border-brand-accent/20 backdrop-blur-md rounded-b-full flex items-center justify-center shadow-2xl relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-t from-brand-accent/20 to-transparent z-10 pointer-events-none"></div>
-            <img
-              src="detergent.jpg"
+            <Image
+              src="/detergent.jpg"
               alt="Ritual Right"
               className="w-full h-full object-cover filter brightness-[0.8] contrast-[1.2]"
+              fill
+              sizes="(max-width: 768px) 100vw, 400px"
             />
           </div>
         </motion.div>
 
-        {/* Right Image (Mobile Only) */}
         <div className="md:hidden w-full max-w-sm mx-auto mt-12 z-20">
           <div className="w-full h-[400px] bg-brand-accent/10 border border-brand-accent/20 backdrop-blur-md rounded-b-[100px] flex items-center justify-center shadow-2xl relative overflow-hidden">
-            <img
-              src="detergent.jpg"
+            <Image
+              src="/detergent.jpg"
               alt="Ritual Right Mobile"
               className="w-full h-full object-cover filter brightness-[0.8] contrast-[1.2]"
+              fill
+              sizes="100vw"
             />
           </div>
         </div>
       </section>
 
-      {/* REVIEWS TICKER */}
       <section className="py-24 bg-brand-accent text-brand-dark overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 mb-12 flex justify-between items-end">
           <h3 className="font-serif text-4xl md:text-5xl">
@@ -454,20 +700,19 @@ export default function Home() {
               className="min-w-[300px] md:min-w-[400px] bg-white p-10 shadow-lg snap-center flex-shrink-0 border-2 border-brand-dark"
             >
               <div className="text-brand-accent text-5xl mb-4 font-serif leading-none">
-                “
+                &ldquo;
               </div>
               <p className="font-serif text-xl md:text-2xl mb-8 leading-snug">
                 {r.text}
               </p>
               <p className="font-sans text-[10px] font-bold uppercase tracking-widest border-t border-gray-200 pt-6 opacity-60">
-                — {r.user}
+                &mdash; {r.user}
               </p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* FAQ SECTION */}
       <section className="py-32 bg-brand-base border-t border-brand-dark/10">
         <div className="max-w-5xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
@@ -524,23 +769,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* EMAIL SUBSCRIPTION SECTION */}
       <section className="py-24 bg-brand-base overflow-hidden flex items-center justify-center border-t border-brand-dark/10 mb-12">
         <div className="w-full max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row bg-[#151515] overflow-hidden shadow-2xl relative border border-white/10">
-            {/* Left Image Section */}
             <div className="w-full md:w-5/12 relative h-[300px] md:h-auto hidden md:block">
-              <img
+              <Image
                 src="/img5.png"
                 alt="Unlock the Ritual"
                 className="absolute inset-0 w-full h-full object-cover filter brightness-[0.6] contrast-[1.2] grayscale"
+                fill
+                sizes="(max-width: 768px) 100vw, 42vw"
               />
               <div className="absolute inset-0 bg-brand-accent mix-blend-multiply opacity-10"></div>
             </div>
 
-            {/* Right Form Section */}
             <div className="w-full md:w-7/12 p-10 md:p-24 relative overflow-hidden flex flex-col justify-center">
-              {/* Subtle grid background inside form */}
               <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white to-transparent"></div>
 
               <div className="relative z-10">
@@ -567,7 +810,7 @@ export default function Home() {
                   onSubmit={(e) => {
                     e.preventDefault();
                     alert(
-                      "Success! 🎉\n\nNote: Since this is a frontend-only project without a database, we cannot actually store this email right now.",
+                      "Success!\n\nNote: Since this is a frontend-only project without a database, we cannot actually store this email right now.",
                     );
                   }}
                 >
@@ -599,3 +842,4 @@ export default function Home() {
     </div>
   );
 }
+

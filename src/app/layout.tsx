@@ -38,7 +38,7 @@ export default function RootLayout({
           {children}
         </main>
 
-        <footer className="bg-brand-dark text-brand-base py-20 px-6 mt-20">
+        <footer className="bg-brand-dark text-brand-base py-20 px-6 ">
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
             <div className="col-span-2">
               <h2 className="font-serif text-6xl mb-6 font-bold tracking-tighter">

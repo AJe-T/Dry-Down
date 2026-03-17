@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import { ArrowLeft, ExternalLink, Instagram, Youtube } from "lucide-react";
@@ -90,9 +91,12 @@ export default function AboutPage() {
 
   return (
     <div
-      className="bg-brand-base text-brand-dark w-full overflow-x-hidden"
+      className="relative bg-brand-base text-brand-dark w-full overflow-x-hidden selection:bg-brand-dark selection:text-white"
       ref={containerRef}
     >
+      <div className="pointer-events-none absolute inset-x-0 top-[24rem] h-[42rem] bg-[radial-gradient(circle_at_center,_rgba(212,175,55,0.08),_transparent_65%)]" />
+      <div className="pointer-events-none absolute right-0 top-[78rem] h-[24rem] w-[24rem] rounded-full bg-brand-accent/10 blur-[120px]" />
+
       <section className="relative min-h-[92vh] border-b border-brand-dark/10 overflow-hidden flex items-center">
         <motion.div style={{ y: heroY }} className="absolute inset-0 z-0">
           <video
@@ -127,9 +131,10 @@ export default function AboutPage() {
           <p className="font-sans font-bold text-xs uppercase tracking-[0.38em] text-brand-accent mb-6">
             About Dry Down
           </p>
-          <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl leading-[0.95] max-w-5xl">
+          <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl leading-[0.95] max-w-5xl tracking-tight">
             Fragrance-first fabric care, told as a living story.
           </h1>
+          <div className="mt-8 h-px w-28 bg-brand-accent/70" />
           <p className="font-sans text-base md:text-xl text-white/85 max-w-3xl mt-8 leading-relaxed">
             Dry Down began with one belief: laundry deserves the emotional depth
             of fine fragrance. We build every formula around scent character,
@@ -148,7 +153,7 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.45, delay: idx * 0.12 }}
-                className="backdrop-blur-md bg-white/10 border border-white/20 px-5 py-5 text-sm font-sans leading-relaxed"
+                className="rounded-[1.75rem] backdrop-blur-md bg-white/10 border border-white/15 px-5 py-5 text-sm font-sans leading-relaxed shadow-[0_24px_60px_rgba(0,0,0,0.12)]"
               >
                 {item}
               </motion.div>
@@ -157,7 +162,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="py-28 px-6 border-b border-brand-dark/10">
+      <section className="relative py-28 px-6 border-b border-brand-dark/10">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -191,15 +196,16 @@ export default function AboutPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="lg:col-span-5 bg-white border border-brand-dark/10 p-8 md:p-10 shadow-xl"
+            className="lg:col-span-5 relative overflow-hidden rounded-[2rem] bg-white/75 backdrop-blur-sm border border-brand-dark/10 p-8 md:p-10 shadow-[0_30px_80px_rgba(0,0,0,0.08)]"
           >
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-[radial-gradient(circle_at_top,_rgba(212,175,55,0.18),_transparent_70%)]" />
             <p className="font-sans text-[10px] font-bold uppercase tracking-[0.3em] text-brand-accent mb-4">
               Brand Principle
             </p>
-            <p className="font-serif text-3xl md:text-4xl leading-snug mb-8">
+            <p className="font-serif text-3xl md:text-4xl leading-snug mb-8 tracking-tight relative z-10">
               Laundry can be a sensory ritual, not a repetitive task.
             </p>
-            <div className="space-y-4">
+            <div className="space-y-4 relative z-10">
               {[
                 "Fragrance architecture inspired by fine perfumery",
                 "Softness and fiber care built into every formulation",
@@ -217,7 +223,8 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="py-28 bg-brand-dark text-brand-base border-b border-white/10">
+      <section className="relative py-28 bg-brand-dark text-brand-base border-b border-white/10 overflow-hidden">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-[radial-gradient(circle_at_top,_rgba(212,175,55,0.14),_transparent_65%)]" />
         <div className="max-w-7xl mx-auto px-6">
           <div className="max-w-3xl mb-14">
             <p className="font-sans text-[10px] font-bold uppercase tracking-[0.34em] text-brand-accent mb-4">
@@ -243,14 +250,17 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.25 }}
                 transition={{ duration: 0.5, delay: idx * 0.08 }}
-                className="relative min-h-[520px] overflow-hidden border border-white/20"
+                className="group relative min-h-[520px] overflow-hidden rounded-[2rem] border border-white/15 bg-white/5 shadow-[0_28px_60px_rgba(0,0,0,0.18)]"
               >
-                <img
+                <Image
                   src={story.image}
                   alt={story.name}
-                  className="absolute inset-0 w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0" style={{ background: story.overlay }} />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
 
                 <div className="relative z-10 p-6 h-full flex flex-col justify-end">
                   <p className="font-sans text-[10px] font-bold uppercase tracking-[0.3em] text-brand-accent mb-3">
@@ -263,7 +273,7 @@ export default function AboutPage() {
                     {story.notes.map((note) => (
                       <span
                         key={note}
-                        className="text-[10px] uppercase tracking-[0.24em] font-sans font-bold px-3 py-2 border border-white/30 bg-black/20"
+                        className="text-[10px] uppercase tracking-[0.24em] font-sans font-bold px-3 py-2 rounded-full border border-white/20 bg-black/20 backdrop-blur-sm"
                       >
                         {note}
                       </span>
@@ -276,11 +286,11 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="py-28 px-6 border-b border-brand-dark/10">
+      <section className="relative py-28 px-6 border-b border-brand-dark/10">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           <motion.div
             style={{ y: ritualVideoY }}
-            className="lg:col-span-6 h-[460px] md:h-[620px] rounded-t-[120px] rounded-b-[120px] overflow-hidden shadow-2xl border border-brand-dark/10"
+            className="lg:col-span-6 relative h-[460px] md:h-[620px] rounded-t-[120px] rounded-b-[120px] overflow-hidden shadow-[0_30px_70px_rgba(0,0,0,0.12)] border border-brand-dark/10"
           >
             <video
               autoPlay
@@ -291,6 +301,7 @@ export default function AboutPage() {
             >
               <source src="/hero3.mp4" type="video/mp4" />
             </video>
+            <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/20 via-transparent to-white/10" />
           </motion.div>
 
           <div className="lg:col-span-6">
@@ -324,7 +335,7 @@ export default function AboutPage() {
               ].map((block) => (
                 <div
                   key={block.title}
-                  className="bg-white border border-brand-dark/10 px-5 py-4 shadow-sm"
+                  className="rounded-[1.5rem] bg-white/70 backdrop-blur-sm border border-brand-dark/10 px-5 py-5 shadow-[0_18px_40px_rgba(0,0,0,0.06)]"
                 >
                   <p className="font-sans text-[10px] font-bold uppercase tracking-[0.28em] text-brand-accent mb-2">
                     {block.title}
@@ -339,7 +350,8 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="py-28 bg-brand-dark text-brand-base">
+      <section className="relative py-28 bg-brand-dark text-brand-base overflow-hidden">
+        <div className="pointer-events-none absolute left-1/2 top-0 h-40 w-[32rem] -translate-x-1/2 bg-[radial-gradient(circle_at_center,_rgba(212,175,55,0.18),_transparent_68%)]" />
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
             <div>
@@ -371,13 +383,15 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.45, delay: idx * 0.08 }}
-                className="group border border-white/20 overflow-hidden bg-white/5"
+                className="group rounded-[2rem] border border-white/15 overflow-hidden bg-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.18)]"
               >
                 <div className="relative h-[320px] overflow-hidden">
-                  <img
+                  <Image
                     src={card.image}
                     alt={card.tag}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                 </div>
