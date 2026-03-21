@@ -62,8 +62,8 @@ const ProductCard = ({
       >
         <div className="aspect-[3/4] w-full relative overflow-hidden bg-neutral-100 transition-all duration-1000">
           <div
-            className="absolute inset-0 opacity-90 transition-transform duration-[1.5s] ease-out group-hover:scale-110"
-            style={{ background: product.imgGradient }}
+            className="absolute inset-0  transition-transform duration-[1.5s] ease-out group-hover:scale-110"
+            // style={{ background: product.imgGradient }}
           ></div>
 
           <div className="absolute inset-0">
@@ -71,12 +71,14 @@ const ProductCard = ({
               src={product.image}
               alt={product.name}
               fill
+              quality={100}
+              unoptimized
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover mix-blend-multiply opacity-85 transition-transform duration-700 group-hover:scale-105"
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
             />
           </div>
 
-          <div className="absolute inset-0 flex items-end p-6 bg-gradient-to-t from-black/40 via-black/10 to-transparent">
+          <div className="absolute inset-0 flex items-end p-6 bg-gradient-to-t from-black/20 to-transparent">
             <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.35em] text-white/90">
               Signature Formula
             </p>
@@ -157,7 +159,9 @@ const ArchivePanelCard = ({
           src={product.image}
           alt={product.name}
           fill
-          sizes="(max-width: 768px) 100vw, 33vw"
+          quality={100}
+          unoptimized
+          sizes="(max-width: 768px) 100vw, 50vw"
           className="object-contain p-8 transition-transform duration-700 group-hover:scale-105"
         />
       </div>
@@ -319,7 +323,7 @@ export default function Home() {
 
   return (
     <div className="bg-brand-base text-brand-dark w-full overflow-x-hidden">
-      <section className="relative h-screen w-full flex flex-col justify-center items-center overflow-hidden bg-brand-base">
+      <section className="relative h-[calc(100vh-5rem)] w-full flex flex-col justify-center items-center overflow-hidden bg-brand-base">
         <div className="absolute inset-0 z-0">
           <video
             autoPlay
@@ -342,7 +346,7 @@ export default function Home() {
           <p className="font-sans font-bold text-xs uppercase tracking-[0.3em] mb-4 text-brand-accent drop-shadow-sm">
             Est. 2026 &bull; Global
           </p>
-          <h1 className="font-serif text-[3.5rem] leading-[1.1] md:text-9xl font-bold text-white mb-6 md:leading-none">
+          <h1 className="font-serif text-[3.5rem] leading-[1.1] md:text-[6rem] lg:text-[8rem] xl:text-9xl font-bold text-white mb-6 md:leading-none">
             LAUNDRY,
             <br />
             <span className="italic font-light opacity-90">ELEVATED.</span>
@@ -365,7 +369,7 @@ export default function Home() {
       <section className="border-y border-neutral-200 bg-white">
         <div className="mx-auto max-w-[1400px] grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-neutral-200">
           <FadeIn delay={100}>
-            <div className="p-16 h-full flex flex-col items-center text-center group hover:bg-neutral-50 transition-colors duration-700">
+            <div className="p-8 md:p-12 lg:p-16 h-full flex flex-col items-center text-center group hover:bg-neutral-50 transition-colors duration-700">
               <Wind
                 strokeWidth={1}
                 className="w-10 h-10 mb-8 text-neutral-400 group-hover:-translate-y-2 transition-transform duration-700 ease-out"
@@ -380,7 +384,7 @@ export default function Home() {
             </div>
           </FadeIn>
           <FadeIn delay={300}>
-            <div className="p-16 h-full flex flex-col items-center text-center group hover:bg-neutral-50 transition-colors duration-700">
+            <div className="p-8 md:p-12 lg:p-16 h-full flex flex-col items-center text-center group hover:bg-neutral-50 transition-colors duration-700">
               <Layers
                 strokeWidth={1}
                 className="w-10 h-10 mb-8 text-neutral-400 group-hover:-translate-y-2 transition-transform duration-700 ease-out"
@@ -395,7 +399,7 @@ export default function Home() {
             </div>
           </FadeIn>
           <FadeIn delay={500}>
-            <div className="p-16 h-full flex flex-col items-center text-center group hover:bg-neutral-50 transition-colors duration-700">
+            <div className="p-8 md:p-12 lg:p-16 h-full flex flex-col items-center text-center group hover:bg-neutral-50 transition-colors duration-700">
               <Zap
                 strokeWidth={1}
                 className="w-10 h-10 mb-8 text-neutral-400 group-hover:-translate-y-2 transition-transform duration-700 ease-out"
@@ -412,15 +416,15 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="collection" className="py-40 px-8 md:px-12">
+      <section id="collection" className="py-20 md:py-40 px-6 md:px-12">
         <div className="mx-auto max-w-[1400px]">
           <FadeIn>
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-12">
               <div className="max-w-2xl">
-                <h2 className="text-5xl md:text-6xl font-serif font-light mb-8 tracking-tight">
+                <h2 className="text-[2.5rem] leading-[1.1] md:text-5xl lg:text-6xl font-serif font-light mb-8 tracking-tight">
                   The Permanent Archive
                 </h2>
-                <p className="text-lg text-neutral-500 font-light leading-relaxed">
+                <p className="text-base md:text-lg text-neutral-500 font-light leading-relaxed">
                   Our signature olfactory profiles, meticulously designed in
                   Grasse. Each formula dictates a specific mood and honors a
                   specific garment archetype.
@@ -431,91 +435,15 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-16">
             {products.map((product, index) => (
-              <ProductCard
-                key={product.id}
-                index={index}
-                product={product}
-              />
+              <ProductCard key={product.id} index={index} product={product} />
             ))}
-          </div>
-
-          <div className="mt-24 border-t border-brand-dark/10 pt-16">
-            <FadeIn>
-              <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-                <div className="max-w-2xl">
-                  <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.34em] text-brand-accent">
-                    Alternate Archive Variants
-                  </p>
-                  <h3 className="mt-4 font-serif text-4xl md:text-5xl font-light tracking-tight text-brand-dark">
-                    The same section, reimagined in different UIs.
-                  </h3>
-                </div>
-                <p className="max-w-xl font-sans text-sm leading-relaxed text-brand-dark/60">
-                  Each option below keeps the same three product cards and the
-                  same product-page navigation, just with different visual
-                  treatments so you can pick the one you like best.
-                </p>
-              </div>
-            </FadeIn>
-
-            <div className="mt-12">
-              <FadeIn>
-                <div className="mb-8 flex items-center justify-between gap-4">
-                  <div>
-                    <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.3em] text-brand-accent">
-                      Variant 02
-                    </p>
-                    <h4 className="mt-3 font-serif text-3xl font-light tracking-tight text-brand-dark">
-                      Editorial Panels
-                    </h4>
-                  </div>
-                  <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-brand-dark/35">
-                    3 Cards / Linked
-                  </span>
-                </div>
-              </FadeIn>
-
-              <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
-                {products.map((product, index) => (
-                  <FadeIn key={product.id} delay={index * 120}>
-                    <ArchivePanelCard product={product} index={index} />
-                  </FadeIn>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-16">
-              <FadeIn>
-                <div className="mb-8 flex items-center justify-between gap-4">
-                  <div>
-                    <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.3em] text-brand-accent">
-                      Variant 03
-                    </p>
-                    <h4 className="mt-3 font-serif text-3xl font-light tracking-tight text-brand-dark">
-                      Framed Dark Cards
-                    </h4>
-                  </div>
-                  <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-brand-dark/35">
-                    3 Cards / Linked
-                  </span>
-                </div>
-              </FadeIn>
-
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-                {products.map((product, index) => (
-                  <FadeIn key={product.id} delay={index * 120}>
-                    <ArchiveFramedCard product={product} index={index} />
-                  </FadeIn>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </section>
 
       <section
         ref={labRef}
-        className="py-32 bg-brand-base overflow-hidden border-t border-brand-dark/10"
+        className="py-16 md:py-32 bg-brand-base overflow-hidden border-t border-brand-dark/10"
       >
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
@@ -523,10 +451,10 @@ export default function Home() {
               <p className="font-sans font-bold text-xs uppercase tracking-[0.3em] mb-4 text-brand-accent">
                 The Laboratory
               </p>
-              <h2 className="font-serif font-bold text-5xl md:text-7xl text-brand-dark mb-8 leading-tight">
+              <h2 className="font-serif font-bold text-[3rem] leading-[1.1] md:text-6xl lg:text-7xl text-brand-dark mb-8 md:leading-tight">
                 Modern Alchemy.
               </h2>
-              <p className="font-sans text-brand-dark opacity-80 leading-relaxed mb-12 text-lg max-w-lg">
+              <p className="font-sans text-brand-dark opacity-80 leading-relaxed mb-12 text-base md:text-lg max-w-lg">
                 We discarded the conventional chemical detergents that degrade
                 your most delicate fabrics. In their place, we utilized organic
                 chemistry and plant-based surfactants to craft fine fragrance
@@ -543,7 +471,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="relative h-[400px] md:h-[700px] w-full rounded-t-[100px] rounded-b-[100px] md:rounded-t-full md:rounded-b-full overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-brand-dark/5">
+            <div className="relative hidden lg:block h-[400px] md:h-[700px] w-full rounded-t-[100px] rounded-b-[100px] md:rounded-t-full md:rounded-b-full overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-brand-dark/5">
               <motion.div
                 className="absolute inset-0 w-full h-[140%]"
                 style={{ y: labImageY, scale: labImageScale }}
@@ -568,7 +496,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-40 bg-brand-dark text-brand-base relative overflow-hidden">
+      <section className="py-20 md:py-40 bg-brand-dark text-brand-base relative overflow-hidden">
         <div className="absolute inset-0 opacity-40">
           <video
             autoPlay
@@ -577,16 +505,16 @@ export default function Home() {
             playsInline
             className="w-full h-full object-cover grayscale mix-blend-overlay"
           >
-            <source src="/hero3.mp4" type="video/mp4" />
+            <source src="/hero2.mp4" type="video/mp4" />
           </video>
         </div>
         <div className="max-w-5xl mx-auto px-6 relative z-10 text-center drop-shadow-lg">
-          <h2 className="font-serif text-4xl md:text-7xl mb-8 leading-tight italic">
+          <h2 className="font-serif text-[2.5rem] leading-[1.1] md:text-6xl lg:text-7xl mb-8 italic">
             &quot;We believe the scent of your clothes is your second
             skin.&quot;
           </h2>
           <div className="w-24 h-1 bg-brand-accent mx-auto mb-8"></div>
-          <p className="font-sans text-lg opacity-80 max-w-2xl mx-auto leading-relaxed">
+          <p className="font-sans text-base md:text-lg opacity-80 max-w-2xl mx-auto leading-relaxed">
             Traditional detergents strip fabrics and leave artificial residues.
             DRY DOWN feeds the fiber using plant-based enzymes and infuses them
             with oils sourced from fine perfumeries.
@@ -627,14 +555,14 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="relative z-10 text-center max-w-3xl px-0 md:px-6">
+        <div className="relative z-30 text-center max-w-3xl px-0 md:px-6">
           <p className="font-sans font-bold text-xs uppercase tracking-[0.3em] mb-4 md:mb-6 text-brand-accent">
             The Ritual
           </p>
-          <h2 className="font-serif text-[3.5rem] leading-[1.1] md:text-8xl text-brand-dark mb-6 md:mb-8 md:leading-none">
+          <h2 className="font-serif  text-[3.5rem] leading-[1.1] md:text-[5rem] lg:text-8xl text-brand-dark mb-6 md:mb-8 md:leading-none">
             Hold luxury in your hands.
           </h2>
-          <p className="font-sans text-lg md:text-xl text-brand-dark opacity-70 leading-relaxed mx-auto max-w-xl">
+          <p className="font-sans text-base md:text-lg lg:text-xl text-brand-dark opacity-70 leading-relaxed mx-auto max-w-xl">
             A tactile experience from the moment you lift the vessel. Designed
             to be displayed, formulated to perform.
           </p>
@@ -669,7 +597,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-24 bg-brand-accent text-brand-dark overflow-hidden">
+      <section className="py-16 md:py-24 bg-brand-accent text-brand-dark overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 mb-12 flex justify-between items-end">
           <h3 className="font-serif text-4xl md:text-5xl">
             Word on the Street
@@ -713,14 +641,14 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-32 bg-brand-base border-t border-brand-dark/10">
+      <section id="faq" className="py-16 md:py-32 bg-brand-base border-t border-brand-dark/10">
         <div className="max-w-5xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
             <div className="lg:col-span-4 flex flex-col items-start">
               <p className="font-sans font-bold text-[10px] md:text-xs uppercase tracking-[0.4em] mb-4 text-brand-accent">
                 Inquiries
               </p>
-              <h2 className="font-serif text-5xl md:text-6xl text-brand-dark leading-tight sticky top-32">
+              <h2 className="font-serif text-[2.5rem] leading-[1.1] md:text-5xl lg:text-6xl text-brand-dark md:leading-tight sticky top-32">
                 Frequently Asked
                 <br />
                 Questions
@@ -769,7 +697,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-24 bg-brand-base overflow-hidden flex items-center justify-center border-t border-brand-dark/10 mb-12">
+      <section className="py-16 md:py-24 bg-brand-base overflow-hidden flex items-center justify-center border-t border-brand-dark/10 mb-12">
         <div className="w-full max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row bg-[#151515] overflow-hidden shadow-2xl relative border border-white/10">
             <div className="w-full md:w-5/12 relative h-[300px] md:h-auto hidden md:block">
@@ -787,16 +715,16 @@ export default function Home() {
               <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white to-transparent"></div>
 
               <div className="relative z-10">
-                <div className="w-12 h-12 mb-8 flex items-center justify-center text-3xl text-brand-accent">
+                <div className="w-12 hidden lg:flex h-12 mb-8 items-center justify-center text-3xl text-brand-accent">
                   &#10022;
                 </div>
                 <p className="font-sans font-bold text-[10px] md:text-xs uppercase tracking-[0.4em] mb-4 text-brand-accent">
                   The Inner Circle
                 </p>
-                <h2 className="font-serif text-5xl md:text-6xl text-white mb-6 leading-tight drop-shadow-sm">
+                <h2 className="font-serif text-[2.5rem] leading-[1.1] md:text-5xl lg:text-6xl text-white mb-6 md:leading-tight drop-shadow-sm">
                   Unlock the Ritual.
                 </h2>
-                <p className="font-sans text-white/60 mb-12 text-lg leading-relaxed max-w-md font-light">
+                <p className="font-sans text-white/60 mb-12 text-base md:text-lg leading-relaxed max-w-md font-light">
                   We invite you to join our private society. Provide your
                   correspondence details below to receive a{" "}
                   <span className="text-brand-accent font-serif italic text-xl">
@@ -825,7 +753,7 @@ export default function Home() {
                   </div>
                   <button
                     type="submit"
-                    className="mt-4 w-full md:w-auto self-start bg-brand-accent text-brand-dark px-12 py-5 font-sans font-bold text-xs uppercase tracking-[0.2em] hover:bg-white hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all duration-300"
+                    className="mt-4 w-full md:w-auto self-start bg-brand-accent text-brand-dark md:px-12 px-6 py-5 font-sans font-bold text-xs uppercase tracking-[0.2em] hover:bg-white hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all duration-300"
                   >
                     Request Sample
                   </button>
@@ -842,4 +770,3 @@ export default function Home() {
     </div>
   );
 }
-

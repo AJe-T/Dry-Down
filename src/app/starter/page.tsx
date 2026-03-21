@@ -61,7 +61,6 @@ export default function StarterPackPage() {
         </div>
 
         <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-16 items-center flex-grow">
-          {/* Left: Visual 3D Box */}
           <div
             className="relative h-[400px] md:h-[600px] w-full bg-gray-200 overflow-hidden card-3d-container rounded-sm shadow-2xl border-4 border-white"
             ref={cardRef}
@@ -88,13 +87,11 @@ export default function StarterPackPage() {
                 </h2>
               </div>
             </div>
-            {/* Floating Badge */}
             <div className="absolute top-6 left-6 md:top-10 md:left-10 bg-brand-accent text-brand-dark font-sans font-bold text-[10px] md:text-xs px-3 py-1 md:px-4 md:py-2 uppercase tracking-widest animate-bounce shadow-md">
               Best Seller
             </div>
           </div>
 
-          {/* Right: Content */}
           <div className="flex flex-col justify-center fade-in mt-10 lg:mt-0">
             <div className="flex items-center gap-4 mb-6">
               <span className="bg-brand-dark text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">
@@ -148,7 +145,6 @@ export default function StarterPackPage() {
         </div>
       </section>
 
-      {/* PARALLAX VIDEO SECTION */}
       <section
         ref={videoRef}
         className="relative h-[80vh] w-full overflow-hidden border-y border-brand-dark/10"
@@ -178,7 +174,6 @@ export default function StarterPackPage() {
           </div>
         </div>
       </section>
-      {/* PARALLAX GRID DETAILS SECTION */}
       <section
         ref={gridRef}
         className="py-24 bg-brand-base overflow-hidden border-t border-brand-dark/10"
@@ -198,12 +193,10 @@ export default function StarterPackPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-24 relative">
-            {/* Left Column - Moves UP */}
             <motion.div
               style={{ y: y1 }}
               className="flex flex-col gap-16 md:gap-32 w-full max-w-md mx-auto lg:ml-auto"
             >
-              {/* Item 1 */}
               <div className="bg-white p-8 rounded-3xl shadow-xl border border-brand-dark/5">
                 <div className="w-full h-[300px] md:h-[400px] mb-8 overflow-hidden rounded-2xl bg-gray-100 flex items-center justify-center transform transition duration-700 hover:scale-105">
                   <img
@@ -225,7 +218,6 @@ export default function StarterPackPage() {
                 </p>
               </div>
 
-              {/* Item 3 */}
               <div className="bg-white p-8 rounded-3xl shadow-xl border border-brand-dark/5">
                 <div className="w-full h-[300px] md:h-[400px] mb-8 overflow-hidden rounded-2xl bg-gray-100 flex items-center justify-center transform transition duration-700 hover:scale-105">
                   <img
@@ -248,7 +240,6 @@ export default function StarterPackPage() {
               </div>
             </motion.div>
 
-            {/* Right Column - Moves DOWN */}
             <motion.div
               style={{ y: y2 }}
               className="flex flex-col gap-16 md:gap-32 w-full max-w-md mx-auto lg:mr-auto lg:mt-40"
@@ -273,7 +264,6 @@ export default function StarterPackPage() {
                 </p>
               </div>
 
-              {/* Item 4 */}
               <div className="bg-brand-dark text-white p-8 rounded-3xl shadow-2xl border border-white/10">
                 <div className="w-full h-[300px] md:h-[400px] mb-8 overflow-hidden rounded-2xl bg-white/5 flex items-center justify-center transform transition duration-700 hover:scale-105">
                   <img

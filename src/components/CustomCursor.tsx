@@ -7,17 +7,14 @@ export default function CustomCursor() {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
 
-  // Use motion values for better performance (no re-renders on every mouse move)
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
 
-  // Keep the cursor responsive with a tighter spring so it tracks the pointer faster.
   const springConfig = { damping: 20, stiffness: 650, mass: 0.2 };
   const cursorXSpring = useSpring(cursorX, springConfig);
   const cursorYSpring = useSpring(cursorY, springConfig);
 
   useEffect(() => {
-    // Only run on desktop/devices with a real pointer
     if (window.matchMedia("(pointer: coarse)").matches) return;
 
     const moveCursor = (e: MouseEvent) => {
@@ -28,7 +25,6 @@ export default function CustomCursor() {
 
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      // Check if we are hovering over an interactive element
       if (
         target.tagName.toLowerCase() === "a" ||
         target.tagName.toLowerCase() === "button" ||
@@ -58,7 +54,6 @@ export default function CustomCursor() {
     };
   }, [cursorX, cursorY, isVisible]);
 
-  // Don't render until we have mounted and confirmed visibility (prevents hydration mismatch)
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 0);
@@ -68,7 +63,6 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* Hide cursor only on larger screens where pointer is fine. Avoid * selector for better compatibility. */}
       <style
         dangerouslySetInnerHTML={{
           __html: `
@@ -81,7 +75,6 @@ export default function CustomCursor() {
         }}
       />
 
-      {/* Outer fluid circle */}
       <motion.div
         className="fixed top-0 left-0 w-8 h-8 rounded-full border border-white/50 pointer-events-none z-[999999] mix-blend-difference hidden md:block"
         style={{
@@ -95,7 +88,6 @@ export default function CustomCursor() {
         transition={{ scale: { duration: 0.3, ease: "easeOut" } }}
       />
 
-      {/* Inner sharp dot */}
       <motion.div
         className="fixed top-0 left-0 w-2 h-2 bg-white rounded-full pointer-events-none z-[999999] mix-blend-difference hidden md:block"
         style={{

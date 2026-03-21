@@ -29,7 +29,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -41,7 +40,6 @@ body {
   border-radius: 10px;
 }
 
-/* Typography Utilities */
 .text-display {
   font-family: var(--font-serif);
   letter-spacing: -0.02em;

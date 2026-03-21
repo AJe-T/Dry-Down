@@ -4,6 +4,7 @@ import Link from "next/link";
 import "./globals.css";
 import CustomCursor from "../components/CustomCursor";
 import Navbar from "../components/Navbar";
+import { Instagram, Twitter, Facebook } from "lucide-react";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -60,13 +61,6 @@ export default function RootLayout({
                     About Dry Down
                   </Link>
                 </li>
-                {/* 
-                <li>
-                  <Link href="/starter" className="hover:text-brand-accent">
-                    Discovery Edition
-                  </Link>
-                </li>
-                */}
                 <li>
                   <Link
                     href="/products/burnt-sugar"
@@ -91,29 +85,26 @@ export default function RootLayout({
                     Pale Ash
                   </Link>
                 </li>
-                {/*
-                <li>
-                  <Link
-                    href="/products/butter-petal"
-                    className="hover:text-brand-accent"
-                  >
-                    Butter Petal
-                  </Link>
-                </li>
-                */}
               </ul>
             </div>
             <div>
               <h4 className="font-sans text-xs font-bold uppercase tracking-widest mb-6 text-brand-accent">
                 Contact
               </h4>
-              <p className="font-sans text-sm opacity-60 mb-2">
+              <p className="font-sans text-sm opacity-60 mb-2 hover:text-brand-accent cursor-pointer transition-colors">
                 concierge@drydown.com
               </p>
-              <p className="font-sans text-sm opacity-60">+1 (800) 555-0199</p>
-              <div className="mt-8 flex gap-4 text-2xl">
-                <span>&#9733;</span>
-                <span>&#10022;</span>
+              <p className="font-sans text-sm opacity-60 hover:text-brand-accent cursor-pointer transition-colors">+1 (800) 555-0199</p>
+              <div className="mt-8 flex gap-6 text-brand-base">
+                <a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-brand-accent transition-all hover:-translate-y-1" aria-label="Instagram">
+                  <Instagram size={24} strokeWidth={1.5} />
+                </a>
+                <a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-brand-accent transition-all hover:-translate-y-1" aria-label="Twitter">
+                  <Twitter size={24} strokeWidth={1.5} />
+                </a>
+                <a href="https://facebook.com" target="_blank" rel="noreferrer" className="hover:text-brand-accent transition-all hover:-translate-y-1" aria-label="Facebook">
+                  <Facebook size={24} strokeWidth={1.5} />
+                </a>
               </div>
             </div>
           </div>

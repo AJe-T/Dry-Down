@@ -7,7 +7,6 @@ import { ArrowLeft } from "lucide-react";
 export default function NotFound() {
   return (
     <div className="min-h-screen bg-brand-dark text-brand-base flex flex-col lg:flex-row overflow-hidden absolute inset-0 z-[100]">
-      {/* Left Text */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-10 lg:p-20 relative z-10">
         <div className="max-w-md w-full">
           <motion.div
@@ -39,7 +38,6 @@ export default function NotFound() {
         </div>
       </div>
 
-      {/* Right Visual Image */}
       <div className="w-full lg:w-1/2 relative h-[50vh] lg:h-full">
         <div className="absolute inset-0 bg-brand-dark/20 z-10 mix-blend-multiply"></div>
         <motion.img

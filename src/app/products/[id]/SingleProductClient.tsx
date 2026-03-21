@@ -327,7 +327,7 @@ export default function SingleProductClient({
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.5, ease: "easeOut" }}
-            className="mb-4 font-sans text-[10px] font-semibold uppercase tracking-[0.2em] opacity-60 flex items-center text-brand-dark"
+            className="mb-4 font-sans text-[10px] font-semibold uppercase tracking-[0.2em] opacity-60 flex flex-wrap items-center text-brand-dark"
           >
             <Link
               href="/"
@@ -348,105 +348,147 @@ export default function SingleProductClient({
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 xl:gap-24 items-center">
             {/* Visual Column */}
-            <div className="lg:col-span-5 h-[60vh] min-h-[500px] lg:h-[75vh] [perspective:1200px]">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
-                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
-                className="relative h-full w-full overflow-hidden rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.15)] group [transform-style:preserve-3d]"
-                ref={cardRef}
-                onMouseMove={handleMouseMove}
-                onMouseLeave={handleMouseLeave}
-              >
+            <div className="lg:col-span-5 flex flex-col gap-4 md:gap-6 w-full">
+              <div className="h-[50vh] min-h-[350px] lg:min-h-[500px] lg:h-[75vh] [perspective:1200px] w-full relative">
                 <motion.div
-                  className="absolute inset-0 w-full h-full flex items-center justify-center will-change-transform"
-                  style={{
-                    background: product.imgGradient,
-                    rotateX: rotateXSpring,
-                    rotateY: rotateYSpring,
-                    scale: cardScaleSpring,
-                  }}
+                  initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+                  animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                  transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
+                  className="relative h-full w-full overflow-hidden rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.15)] group [transform-style:preserve-3d]"
+                  ref={cardRef}
+                  onMouseMove={handleMouseMove}
+                  onMouseLeave={handleMouseLeave}
                 >
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.22),_transparent_48%)] opacity-70" />
                   <motion.div
-                    className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none mix-blend-overlay"
-                    style={{ background: glareBackground }}
-                  />
+                    className="absolute inset-0 w-full h-full flex items-center justify-center will-change-transform"
+                    style={{
+                      background: product.imgGradient,
+                      rotateX: rotateXSpring,
+                      rotateY: rotateYSpring,
+                      scale: cardScaleSpring,
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.22),_transparent_48%)] opacity-70" />
+                    <motion.div
+                      className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none mix-blend-overlay"
+                      style={{ background: glareBackground }}
+                    />
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-white/10" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-white/10" />
 
-                  <div className="relative z-20 h-full w-full [transform:translateZ(24px)]">
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={productGallery[currentSlide]}
-                        initial={{ opacity: 0, scale: 1.03 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.98 }}
-                        transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                        className="relative h-full w-full"
+                    <div className="relative z-20 h-full w-full [transform:translateZ(24px)]">
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={productGallery[currentSlide]}
+                          initial={{ opacity: 0, scale: 1.03 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.98 }}
+                          transition={{
+                            duration: 0.25,
+                            ease: [0.22, 1, 0.36, 1],
+                          }}
+                          className="relative h-full w-full"
+                        >
+                          <Image
+                            src={productGallery[currentSlide]}
+                            alt={`${product.name} view ${currentSlide + 1}`}
+                            fill
+                            quality={100}
+                            unoptimized
+                            priority={currentSlide === 0}
+                            sizes="(max-width: 1024px) 100vw, 42vw"
+                            className="object-cover object-center transition-transform duration-700 group-hover:scale-[1.03]"
+                          />
+                        </motion.div>
+                      </AnimatePresence>
+                    </div>
+
+                    {productGallery.length > 1 && (
+                      <>
+                        <button
+                          type="button"
+                          aria-label={`Previous ${product.name} image`}
+                          onClick={handlePrevSlide}
+                          className="absolute inset-y-0 left-0 z-30 flex w-1/2 items-center justify-start bg-gradient-to-r from-black/28 via-black/12 to-transparent px-5 md:px-7 text-white/90 opacity-0 transition-all duration-300 hover:from-black/40 hover:via-black/18 hover:opacity-100 focus:opacity-100 group-hover:opacity-100"
+                        >
+                          <span className="flex h-12 w-12 -translate-x-2 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md transition-transform duration-300 group-hover:translate-x-0 hover:scale-105">
+                            <ChevronLeft
+                              className="h-5 w-5"
+                              strokeWidth={1.5}
+                            />
+                          </span>
+                        </button>
+
+                        <button
+                          type="button"
+                          aria-label={`Next ${product.name} image`}
+                          onClick={handleNextSlide}
+                          className="absolute inset-y-0 right-0 z-30 flex w-1/2 items-center justify-end bg-gradient-to-l from-black/28 via-black/12 to-transparent px-5 md:px-7 text-white/90 opacity-0 transition-all duration-300 hover:from-black/40 hover:via-black/18 hover:opacity-100 focus:opacity-100 group-hover:opacity-100"
+                        >
+                          <span className="flex h-12 w-12 translate-x-2 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md transition-transform duration-300 group-hover:translate-x-0 hover:scale-105">
+                            <ChevronRight
+                              className="h-5 w-5"
+                              strokeWidth={1.5}
+                            />
+                          </span>
+                        </button>
+                      </>
+                    )}
+
+                    <div className="absolute inset-x-0 bottom-0 z-30 flex flex-wrap items-end justify-between gap-4 p-6 md:p-8">
+                      <div className="rounded-full border border-white/20 bg-black/20 px-4 py-2 backdrop-blur-md hidden sm:block">
+                        <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.32em] text-white/90">
+                          Auto Gallery
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {productGallery.map((image, index) => (
+                          <button
+                            key={image}
+                            type="button"
+                            aria-label={`View ${product.name} image ${index + 1}`}
+                            onClick={() => setCurrentSlide(index)}
+                            className={`h-2.5 rounded-full transition-all duration-500 ${
+                              currentSlide === index
+                                ? "w-8 bg-white"
+                                : "w-2.5 bg-white/40 hover:bg-white/70"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              </div>
+
+              {/* Thumbnails below */}
+              {productGallery.length > 1 && (
+                <FadeIn delay={0.4}>
+                  <div className="grid grid-cols-3 gap-2 sm:gap-4 w-full">
+                    {productGallery.map((image, index) => (
+                      <button
+                        key={image}
+                        onClick={() => setCurrentSlide(index)}
+                        className={`relative aspect-square md:aspect-[4/3] w-full overflow-hidden rounded-xl sm:rounded-2xl border-2 transition-all duration-300 ${
+                          currentSlide === index
+                            ? "border-brand-accent/50 opacity-100 shadow-md transform scale-[1.02]"
+                            : "border-transparent opacity-60 hover:opacity-100"
+                        }`}
+                        style={{ background: product.imgGradient }}
+                        aria-label={`View ${product.name} image ${index + 1}`}
                       >
                         <Image
-                          src={productGallery[currentSlide]}
-                          alt={`${product.name} view ${currentSlide + 1}`}
+                          src={image}
+                          alt={`${product.name} thumbnail ${index + 1}`}
                           fill
-                          priority={currentSlide === 0}
-                          sizes="(max-width: 1024px) 100vw, 42vw"
-                          className="object-cover object-center transition-transform duration-700 group-hover:scale-[1.03]"
+                          sizes="(max-width: 768px) 33vw, 15vw"
+                          className="object-cover transition-transform duration-500 hover:scale-110"
                         />
-                      </motion.div>
-                    </AnimatePresence>
-                  </div>
-
-                  {productGallery.length > 1 && (
-                    <>
-                      <button
-                        type="button"
-                        aria-label={`Previous ${product.name} image`}
-                        onClick={handlePrevSlide}
-                        className="absolute inset-y-0 left-0 z-30 flex w-1/2 items-center justify-start bg-gradient-to-r from-black/28 via-black/12 to-transparent px-5 md:px-7 text-white/90 opacity-0 transition-all duration-300 hover:from-black/40 hover:via-black/18 hover:opacity-100 focus:opacity-100 group-hover:opacity-100"
-                      >
-                        <span className="flex h-12 w-12 -translate-x-2 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md transition-transform duration-300 group-hover:translate-x-0 hover:scale-105">
-                          <ChevronLeft className="h-5 w-5" strokeWidth={1.5} />
-                        </span>
                       </button>
-
-                      <button
-                        type="button"
-                        aria-label={`Next ${product.name} image`}
-                        onClick={handleNextSlide}
-                        className="absolute inset-y-0 right-0 z-30 flex w-1/2 items-center justify-end bg-gradient-to-l from-black/28 via-black/12 to-transparent px-5 md:px-7 text-white/90 opacity-0 transition-all duration-300 hover:from-black/40 hover:via-black/18 hover:opacity-100 focus:opacity-100 group-hover:opacity-100"
-                      >
-                        <span className="flex h-12 w-12 translate-x-2 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md transition-transform duration-300 group-hover:translate-x-0 hover:scale-105">
-                          <ChevronRight className="h-5 w-5" strokeWidth={1.5} />
-                        </span>
-                      </button>
-                    </>
-                  )}
-
-                  <div className="absolute inset-x-0 bottom-0 z-30 flex flex-wrap items-end justify-between gap-4 p-6 md:p-8">
-                    <div className="rounded-full border border-white/20 bg-black/20 px-4 py-2 backdrop-blur-md">
-                      <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.32em] text-white/90">
-                        Auto Gallery
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {productGallery.map((image, index) => (
-                        <button
-                          key={image}
-                          type="button"
-                          aria-label={`View ${product.name} image ${index + 1}`}
-                          onClick={() => setCurrentSlide(index)}
-                          className={`h-2.5 rounded-full transition-all duration-500 ${
-                            currentSlide === index
-                              ? "w-8 bg-white"
-                              : "w-2.5 bg-white/40 hover:bg-white/70"
-                          }`}
-                        />
-                      ))}
-                    </div>
+                    ))}
                   </div>
-                </motion.div>
-              </motion.div>
+                </FadeIn>
+              )}
             </div>
 
             {/* Details Column */}
@@ -465,7 +507,7 @@ export default function SingleProductClient({
                   </p>
                 </div>
                 <h1
-                  className="font-serif font-light text-6xl md:text-[5rem] xl:text-[6rem] mb-12 text-brand-dark leading-[0.9] tracking-tighter"
+                  className="font-serif font-light text-5xl sm:text-[3.5rem] leading-[0.9] md:text-[5rem] lg:text-[6rem] xl:text-[7.5rem] mb-6 md:mb-8 lg:mb-12 text-brand-dark tracking-tighter"
                   style={{ color: product.colorHex }}
                 >
                   {product.name}
@@ -473,64 +515,48 @@ export default function SingleProductClient({
               </FadeIn>
 
               <FadeIn delay={0.4}>
-                <p className="font-sans font-light text-brand-dark/70 leading-relaxed mb-12 text-lg md:text-xl relative max-w-2xl">
+                <p className="font-sans font-light text-brand-dark/70 leading-relaxed mb-8 lg:mb-12 text-base md:text-xl relative max-w-2xl">
                   {product.description}
                 </p>
               </FadeIn>
 
-              {/* Pros/Cons */}
+              {/* Product Facts */}
               <FadeIn delay={0.6}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-8 border-t border-brand-dark/10 pt-8 mt-4">
                   <div className="group">
-                    <h4 className="font-sans text-[9px] font-bold uppercase tracking-[0.3em] mb-6 text-brand-dark/50 flex items-center gap-3">
-                      <span className="w-1.5 h-1.5 rounded-full bg-green-700/40"></span>{" "}
-                      The Good
+                    <h4 className="font-sans text-[9px] font-bold uppercase tracking-[0.3em] mb-4 text-brand-dark/50 flex items-center gap-3">
+                      <Wind className="w-3 h-3" />
+                      Longevity
                     </h4>
-                    <ul className="text-sm space-y-4 font-sans opacity-80 font-light">
-                      {product.pros.map((p, i) => (
-                        <li
-                          key={i}
-                          className="flex gap-4 leading-relaxed group-hover:text-brand-dark transition-colors duration-500"
-                        >
-                          <span className="text-green-800/50 font-serif italic">
-                            +
-                          </span>{" "}
-                          {p}
-                        </li>
-                      ))}
-                    </ul>
+                    <p className="text-sm font-sans opacity-80 font-light leading-relaxed group-hover:text-brand-dark transition-colors duration-500">
+                      Micro-encapsulated essential oils offer a slow release,
+                      ensuring garments maintain a soft scent footprint over 14
+                      days of wear.
+                    </p>
                   </div>
                   <div className="group">
-                    <h4 className="font-sans text-[9px] font-bold uppercase tracking-[0.3em] mb-6 text-brand-dark/50 flex items-center gap-3">
-                      <span className="w-1.5 h-1.5 rounded-full bg-red-800/40"></span>{" "}
-                      The Note
+                    <h4 className="font-sans text-[9px] font-bold uppercase tracking-[0.3em] mb-4 text-brand-dark/50 flex items-center gap-3">
+                      <Droplet className="w-3 h-3" />
+                      Application
                     </h4>
-                    <ul className="text-sm space-y-4 font-sans opacity-80 font-light">
-                      {product.cons.map((c, i) => (
-                        <li
-                          key={i}
-                          className="flex gap-4 leading-relaxed group-hover:text-brand-dark transition-colors duration-500"
-                        >
-                          <span className="text-red-900/50 font-serif italic">
-                            -
-                          </span>{" "}
-                          {c}
-                        </li>
-                      ))}
-                    </ul>
+                    <p className="text-sm font-sans opacity-80 font-light leading-relaxed group-hover:text-brand-dark transition-colors duration-500">
+                      High-efficiency (HE) compatible. Formulated perfectly for
+                      delicate textiles such as silks, wools, and cashmere
+                      knits.
+                    </p>
                   </div>
                 </div>
               </FadeIn>
 
               <FadeIn
                 delay={0.8}
-                className="flex flex-col sm:flex-row items-center gap-10 mt-auto pt-8 border-t border-brand-dark/10"
+                className="flex flex-col sm:flex-row items-center sm:justify-between py-6 gap-6 sm:gap-10 mt-auto border-t border-brand-dark/10"
               >
-                <div className="font-serif font-light text-4xl text-brand-dark tracking-tight">
+                <div className="font-serif font-light text-[2.5rem] md:text-4xl text-brand-dark tracking-tight">
                   {product.price}
                 </div>
                 <button
-                  className="group relative overflow-hidden text-white px-12 py-5 rounded-full font-sans text-[10px] font-bold uppercase tracking-[0.25em] transition-all duration-700 shadow-[0_15px_30px_-10px_rgba(0,0,0,0.2)] hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] hover:-translate-y-1 w-full sm:w-auto flex-1 max-w-sm"
+                  className="group relative overflow-hidden text-white px-8 md:px-12 py-4 md:py-5 rounded-full font-sans text-[10px] md:text-[11px] font-bold uppercase tracking-widest md:tracking-[0.25em] transition-all duration-700 shadow-[0_15px_30px_-10px_rgba(0,0,0,0.2)] hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] hover:-translate-y-1 w-[85%] sm:w-auto flex-1 "
                   style={{ backgroundColor: product.colorHex }}
                 >
                   <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-700 ease-[0.16,1,0.3,1]"></div>
@@ -546,15 +572,15 @@ export default function SingleProductClient({
       </section>
 
       {/* --- INGREDIENTS & SCENT PROFILE SECTION --- */}
-      <section className="relative py-32 bg-white/80 backdrop-blur-sm rounded-[3rem] shadow-[0_-20px_50px_rgba(0,0,0,0.02)] border-t border-brand-dark/5 mx-4 md:mx-10 my-10 z-10">
+      <section className="relative py-16 lg:py-32 bg-white/80 backdrop-blur-sm rounded-3xl md:rounded-[3rem] shadow-[0_-20px_50px_rgba(0,0,0,0.02)] border-t border-brand-dark/5 mx-2 sm:mx-4 md:mx-10 my-10 z-10">
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <FadeIn>
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 md:mb-20 gap-8">
               <div>
                 <p className="font-sans text-[10px] font-bold uppercase tracking-[0.3em] mb-4 text-brand-accent flex items-center gap-3">
                   <Sparkles className="w-3 h-3" /> Olfactory Composition
                 </p>
-                <h2 className="font-serif font-light text-5xl md:text-6xl text-brand-dark tracking-tighter">
+                <h2 className="font-serif font-light text-[2.5rem] leading-[1.1] md:text-[4rem] lg:text-[5rem] text-brand-dark tracking-tighter">
                   The Scent Architecture
                 </h2>
               </div>
@@ -621,7 +647,7 @@ export default function SingleProductClient({
             <div className="lg:col-span-6">
               <FadeIn
                 delay={0.6}
-                className="bg-brand-base/50 p-10 md:p-14 rounded-[2rem] border border-brand-dark/5 relative overflow-hidden group"
+                className="bg-brand-base/50 p-6 sm:p-10 md:p-14 rounded-[2rem] border border-brand-dark/5 relative overflow-hidden group"
               >
                 {/* Subtle animated background gradient */}
                 <div
@@ -652,18 +678,18 @@ export default function SingleProductClient({
       </section>
 
       {/* --- ENGINEERING SECTION --- */}
-      <section className="max-w-[90rem] mx-auto py-32 px-6">
+      <section className="max-w-[90rem] mx-auto py-16 lg:py-32 px-4 sm:px-6">
         <FadeIn>
-          <div className="text-center mb-24 flex flex-col items-center">
+          <div className="text-center mb-12 md:mb-24 flex flex-col items-center">
             <p className="font-sans text-xs font-bold uppercase tracking-widest mb-6 text-brand-accent flex items-center gap-4">
               <span className="w-12 h-[2px] bg-brand-accent/40"></span>
               The Engineering
               <span className="w-12 h-[2px] bg-brand-accent/40"></span>
             </p>
-            <h2 className="font-serif font-bold text-5xl md:text-6xl lg:text-7xl text-brand-dark mb-10 tracking-tight">
+            <h2 className="font-serif font-bold text-[2.5rem] leading-[1.1] md:text-[4.5rem] lg:text-[5.5rem] text-brand-dark mb-10 tracking-tight">
               Beyond Conditioning
             </h2>
-            <p className="font-sans text-brand-dark/70 font-light max-w-3xl mx-auto text-lg leading-relaxed">
+            <p className="font-sans text-brand-dark/70 font-light max-w-3xl mx-auto text-base md:text-xl leading-relaxed">
               We&apos;ve re-imagined the molecular structure of fabric care to
               provide a sensorial experience that lasts long after the wash,
               preserving both fiber and memory.
@@ -691,9 +717,9 @@ export default function SingleProductClient({
           ].map((feature, idx) => (
             <StaggerItem key={idx}>
               <div className="group relative h-full">
-                <div className="absolute inset-0 bg-white rounded-[3rem] shadow-[0_15px_40px_rgb(0,0,0,0.04)] border border-brand-dark/5 transition-transform duration-700 group-hover:-translate-y-3"></div>
-                <div className="relative p-12 lg:p-14 flex flex-col items-center text-center h-full">
-                  <div className="w-24 h-24 rounded-full bg-brand-base text-brand-accent flex items-center justify-center mb-10 relative">
+                <div className="absolute inset-0 bg-white rounded-[2.5rem] md:rounded-[3rem] shadow-[0_15px_40px_rgb(0,0,0,0.04)] border border-brand-dark/5 transition-transform duration-700 group-hover:-translate-y-3"></div>
+                <div className="relative p-8 sm:p-12 lg:p-14 flex flex-col items-center text-center h-full">
+                  <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-brand-base text-brand-accent flex items-center justify-center mb-8 md:mb-10 relative">
                     <motion.div
                       className="absolute inset-0 rounded-full border-2 border-brand-accent/30 scale-110"
                       whileHover={{ scale: 1.25, opacity: 0 }}
@@ -721,7 +747,7 @@ export default function SingleProductClient({
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 1.5 }}
-        className="w-full relative h-[70vh] min-h-[600px] flex items-center overflow-hidden rounded-[3rem] max-w-[90rem] mx-auto shadow-[0_30px_60px_rgba(0,0,0,0.15)] mb-32"
+        className="w-full relative h-[60vh] min-h-[500px] md:min-h-[600px] flex items-center overflow-hidden rounded-[2rem] md:rounded-[3rem] max-w-[90rem] mx-2 md:mx-auto shadow-[0_30px_60px_rgba(0,0,0,0.15)] mb-16 md:mb-32"
       >
         <div className="absolute inset-0 z-0 bg-brand-dark">
           <motion.div
@@ -734,21 +760,24 @@ export default function SingleProductClient({
               src="/handImg.jpg"
               alt="Crafted in Grasse"
               fill
+              quality={100}
+              unoptimized
               sizes="100vw"
               className="object-cover opacity-60 mix-blend-luminosity"
             />
           </motion.div>
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-black/80 via-black/50 to-transparent"></div>
         </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-12 md:px-20 w-full text-center md:text-left">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-20 w-full text-center md:text-left mt-16 md:mt-0">
           <FadeIn>
-            <p className="font-sans text-xs font-bold uppercase tracking-[0.4em] text-white/60 mb-8">
+            <p className="font-sans text-xs font-bold uppercase tracking-[0.4em] text-white/60 mb-6 md:mb-8">
               Origin Story
             </p>
-            <h2 className="text-white text-6xl md:text-7xl lg:text-[8rem] flex flex-col leading-[0.85] select-none tracking-tight font-serif font-bold mb-12">
-              <span className="opacity-95">CRAFTED IN</span>
+            <h2 className="text-white text-[3.5rem] leading-[0.9] sm:text-6xl md:text-7xl lg:text-[8rem] flex flex-col select-none tracking-tight font-serif font-bold mb-8 md:mb-12">
+              <span className="opacity-95">CRAFTED</span>
+              <span className="opacity-95">IN</span>
               <span
-                className="italic mt-4 drop-shadow-2xl"
+                className="italic mt-2 md:mt-4 drop-shadow-2xl"
                 style={{ color: product.colorHex }}
               >
                 GRASSE
@@ -756,9 +785,9 @@ export default function SingleProductClient({
             </h2>
             <RevealLine
               color="bg-white/40"
-              className="max-w-[10rem] mb-12 mx-auto md:mx-0"
+              className="max-w-[8rem] md:max-w-[10rem] mb-8 md:mb-12 mx-auto md:mx-0"
             />
-            <p className="text-white/90 max-w-lg font-sans font-medium text-lg leading-relaxed mx-auto md:mx-0">
+            <p className="text-white/90 max-w-lg font-sans font-medium text-base md:text-lg leading-relaxed mx-auto md:mx-0 px-2 md:px-0">
               Every formulation is infused with fine perfume-grade absolute
               oils, meticulously developed and aged in the historic fragrance
               capital of the world.
@@ -768,18 +797,18 @@ export default function SingleProductClient({
       </motion.section>
 
       {/* OLFACTORY JOURNEY */}
-      <div className="max-w-[90rem] mx-auto mt-32 px-6 mb-32 overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+      <div className="max-w-[90rem] mx-auto mt-16 md:mt-32 px-6 mb-16 md:mb-32 overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-20 items-center">
           <FadeIn>
-            <p className="font-sans text-xs font-bold uppercase tracking-widest mb-6 text-brand-accent flex items-center gap-4">
+            <p className="font-sans text-xs font-bold uppercase tracking-widest mb-4 md:mb-6 text-brand-accent flex items-center gap-4">
               <span className="w-12 h-[2px] bg-brand-accent/40"></span>
               The Olfactory Journey
             </p>
-            <h2 className="font-serif font-bold text-5xl md:text-6xl lg:text-7xl text-brand-dark mb-20 tracking-tight">
+            <h2 className="font-serif font-bold text-[3rem] leading-[1.1] md:text-7xl lg:text-[6rem] text-brand-dark mb-12 md:mb-20 tracking-tight">
               {product.name} Profile
             </h2>
 
-            <div className="space-y-16">
+            <div className="space-y-10 md:space-y-16">
               {[
                 { title: "Top Notes", notes: topNotes, hovOp: 40 },
                 { title: "Heart Notes", notes: heartNotes, hovOp: 60 },
@@ -813,7 +842,7 @@ export default function SingleProductClient({
           {/* Right side circle visual */}
           <FadeIn
             delay={0.3}
-            className="relative w-full aspect-square max-w-[600px] mx-auto flex items-center justify-center overflow-hidden"
+            className="relative w-full aspect-square max-w-[600px] mx-auto flex items-center justify-center overflow-hidden scale-90 sm:scale-100"
           >
             {/* Ambient Glow */}
             {/* <div
@@ -841,15 +870,15 @@ export default function SingleProductClient({
               whileInView={{ scale: 1, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 1.5, ease: "easeOut" }}
-              className="font-serif font-bold text-4xl text-brand-dark flex flex-col items-center gap-4 relative z-10 w-64 h-64 justify-center bg-white/90 backdrop-blur-xl rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.08)] border border-white"
+              className="font-serif font-bold text-3xl md:text-4xl text-brand-dark flex flex-col items-center gap-3 md:gap-4 relative z-10 w-48 h-48 md:w-64 md:h-64 justify-center bg-white/90 backdrop-blur-xl rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.08)] border border-white"
             >
-              <span className="text-xs font-sans font-bold uppercase tracking-widest opacity-60 mb-1">
+              <span className="text-[10px] md:text-xs font-sans font-bold uppercase tracking-widest opacity-60 mb-1">
                 Essence
               </span>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 md:gap-3">
                 <span className="opacity-90">Pure</span>
                 <span
-                  className="w-3 h-3 rounded-full shadow-inner"
+                  className="w-2 md:w-3 h-2 md:h-3 rounded-full shadow-inner"
                   style={{ backgroundColor: product.colorHex }}
                 ></span>
               </div>
@@ -863,29 +892,33 @@ export default function SingleProductClient({
             >
               {[
                 {
-                  icon: <Wind className="w-8 h-8 stroke-[1.5]" />,
-                  pos: "top-[10%] right-[18%]",
+                  icon: <Wind className="w-6 h-6 md:w-8 md:h-8 stroke-[1.5]" />,
+                  pos: "top-[4%] right-[10%] md:top-[10%] md:right-[18%]",
                   delay: 0,
                 },
                 {
-                  icon: <Sparkles className="w-8 h-8 stroke-[1.5]" />,
-                  pos: "top-[44%] right-[4%]",
+                  icon: (
+                    <Sparkles className="w-6 h-6 md:w-8 md:h-8 stroke-[1.5]" />
+                  ),
+                  pos: "top-[40%] right-[0%] md:top-[44%] md:right-[4%]",
                   delay: 1,
                 },
                 {
-                  icon: <Leaf className="w-8 h-8 stroke-[1.5]" />,
-                  pos: "bottom-[12%] left-[20%]",
+                  icon: <Leaf className="w-6 h-6 md:w-8 md:h-8 stroke-[1.5]" />,
+                  pos: "bottom-[8%] left-[12%] md:bottom-[12%] md:left-[20%]",
                   delay: 2,
                 },
                 {
-                  icon: <Droplet className="w-8 h-8 stroke-[1.5]" />,
-                  pos: "top-[50%] left-[4%] -translate-y-1/2",
+                  icon: (
+                    <Droplet className="w-6 h-6 md:w-8 md:h-8 stroke-[1.5]" />
+                  ),
+                  pos: "top-[50%] left-[0%] md:left-[4%] -translate-y-1/2",
                   delay: 0.5,
                 },
               ].map((item, i) => (
                 <div
                   key={i}
-                  className={`absolute ${item.pos} text-brand-accent/70 backdrop-blur-md bg-white/60 p-5 rounded-full border border-white/80 shadow-lg`}
+                  className={`absolute ${item.pos} text-brand-accent/70 backdrop-blur-md bg-white/60 p-3 md:p-5 rounded-full border border-white/80 shadow-lg pointer-events-auto`}
                 >
                   <motion.div
                     animate={{ rotate: -360 }}
@@ -915,16 +948,16 @@ export default function SingleProductClient({
       </div>
 
       {otherProducts.length > 0 && (
-        <section className="relative py-28 border-t border-brand-dark/10 overflow-hidden">
+        <section className="relative py-16 md:py-28 border-t border-brand-dark/10 overflow-hidden">
           <div className="absolute inset-x-0 top-0 h-48 bg-[radial-gradient(circle_at_top,_rgba(212,175,55,0.12),_transparent_70%)] pointer-events-none" />
           <div className="max-w-[90rem] mx-auto px-6">
             <FadeIn>
-              <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-14">
+              <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 md:gap-8 mb-10 md:mb-14">
                 <div className="max-w-2xl">
                   <p className="font-sans text-[10px] font-bold uppercase tracking-[0.34em] text-brand-accent mb-4">
                     Other Products
                   </p>
-                  <h2 className="font-serif text-5xl md:text-6xl text-brand-dark leading-[0.95] tracking-tight">
+                  <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-brand-dark leading-[0.95] tracking-tight">
                     Continue through the archive.
                   </h2>
                 </div>
@@ -947,10 +980,10 @@ export default function SingleProductClient({
                     item.heartNotes,
                     "French Lavender, Orris Root",
                   ).slice(0, 1),
-                  ...parseNoteList(item.baseNotes, "Ash Wood, Tonka Bean").slice(
-                    0,
-                    1,
-                  ),
+                  ...parseNoteList(
+                    item.baseNotes,
+                    "Ash Wood, Tonka Bean",
+                  ).slice(0, 1),
                 ];
 
                 return (
@@ -960,7 +993,7 @@ export default function SingleProductClient({
                       className="group grid h-full min-h-[260px] overflow-hidden rounded-[2rem] border border-brand-dark/10 bg-white/80 backdrop-blur-sm shadow-[0_24px_60px_rgba(0,0,0,0.06)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_30px_70px_rgba(0,0,0,0.1)] md:grid-cols-[220px_1fr]"
                     >
                       <div
-                        className="relative min-h-[220px] overflow-hidden md:min-h-full"
+                        className="relative min-h-[180px] sm:min-h-[220px] overflow-hidden md:min-h-full"
                         style={{ background: item.imgGradient }}
                       >
                         <div className="absolute inset-0 bg-gradient-to-b from-white/15 via-transparent to-black/15" />
@@ -979,11 +1012,11 @@ export default function SingleProductClient({
                       </div>
 
                       <div className="flex flex-1 flex-col p-6 md:p-7">
-                        <div className="flex items-center justify-between gap-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4 mb-2">
                           <span className="font-sans text-[10px] font-bold uppercase tracking-[0.26em] text-brand-dark/40">
                             Archive Selection
                           </span>
-                          <span className="font-sans text-[10px] font-bold uppercase tracking-[0.22em] text-brand-dark/35">
+                          <span className="font-sans text-[10px] font-bold uppercase tracking-[0.22em] text-brand-dark/35 whitespace-nowrap">
                             {item.size}
                           </span>
                         </div>
@@ -1012,10 +1045,7 @@ export default function SingleProductClient({
                           </span>
                           <span className="font-sans text-[10px] font-bold uppercase tracking-[0.24em] text-brand-dark flex items-center gap-2 transition-all duration-300 group-hover:gap-4">
                             View Product{" "}
-                            <MoveRight
-                              className="w-4 h-4"
-                              strokeWidth={1.25}
-                            />
+                            <MoveRight className="w-4 h-4" strokeWidth={1.25} />
                           </span>
                         </div>
                       </div>

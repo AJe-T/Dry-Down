@@ -11,8 +11,8 @@ export type ProductProps = {
   pros: string[];
   cons: string[];
   review: { text: string; author: string };
-  bgColor: string; // Tailwind class
-  textColor: string; // Tailwind class
+  bgColor: string;
+  textColor: string;
   imageUrl: string;
   image: string;
   notes: number[];
@@ -89,8 +89,8 @@ export const products: ProductProps[] = [
     },
     bgColor: "bg-[#6f2a33]",
     textColor: "text-[#F5F2EB]",
-    imageUrl: "/main.webp",
-    image: "/img2.png",
+    imageUrl: "/img1.png",
+    image: "/BURNT_SUGAR.webp",
     notes: [80, 20, 10, 95, 60], // Woody, Floral, Fresh, Sweet, Spicy (mock interpretation)
     imgGradient: "linear-gradient(135deg, #6f2a33 0%, #3a151b 100%)",
     topNotes: "Toasted Macadamia, Sea Salt",
@@ -124,8 +124,8 @@ export const products: ProductProps[] = [
     },
     bgColor: "bg-[#4c7c42]",
     textColor: "text-[#F5F2EB]",
-    imageUrl: "/main.webp",
-    image: "/img2.png",
+    imageUrl: "/img2.png",
+    image: "/ACID_BLOOM.webp",
     notes: [15, 95, 90, 30, 10], // Woody, Floral, Fresh, Sweet, Spicy
     imgGradient: "linear-gradient(135deg, #4c7c42 0%, #294723 100%)",
     topNotes: "Crisp Apple, Green Leaves",
@@ -159,8 +159,8 @@ export const products: ProductProps[] = [
     },
     bgColor: "bg-[#6d5f83]",
     textColor: "text-[#F5F2EB]",
-    imageUrl: "/main.webp",
-    image: "/img2.png",
+    imageUrl: "/img3.png",
+    image: "/PALE_ASH.webp",
     notes: [45, 75, 50, 20, 10], // Woody, Floral, Fresh, Sweet, Spicy
     imgGradient: "linear-gradient(135deg, #6d5f83 0%, #3e364c 100%)",
     topNotes: "Bergamot, Clary Sage",
