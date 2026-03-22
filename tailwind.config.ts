@@ -21,7 +21,7 @@ const config: Config = {
         serif: ["var(--font-playfair)", "serif"],
       },
       animation: {
-        marquee: "marquee 20s linear infinite",
+        marquee: "marquee 45s linear infinite",
         float: "float 6s ease-in-out infinite",
         "spin-slow": "spin 12s linear infinite",
       },
