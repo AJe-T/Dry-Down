@@ -112,11 +112,11 @@ const ProductCard = ({
         {/* CONTENT SECTION */}
         <div className="p-6 md:p-8 flex-grow flex flex-col">
           {/* Top Label */}
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <span className="font-sans text-[9px] font-semibold uppercase tracking-[0.25em] text-[#a09a8e]">
               {product.features.slice(0, 3).join(" • ")}
             </span>
-          </div>
+          </div> */}
 
           {/* Titles */}
           <h3 className="text-3xl font-serif text-[#2a2824] mb-1 group-hover:text-brand-accent transition-colors duration-300">
@@ -127,10 +127,10 @@ const ProductCard = ({
           </p>
 
           {/* Notes Grid */}
-          <div className="grid grid-cols-3 gap-2 mb-8 mt-auto">
+          {/* <div className="grid grid-cols-3 gap-2 mb-8 mt-auto">
             {noteSummary.map((note, i) => (
-              <div 
-                key={i} 
+              <div
+                key={i}
                 className="border border-[#e4dfd1] p-3 text-center bg-white/50 flex flex-col justify-center items-center h-[72px] transition-colors group-hover:bg-white"
               >
                 <span className="font-sans text-[8px] font-bold uppercase tracking-[0.2em] text-[#a09a8e] mb-1.5 block">
@@ -141,7 +141,7 @@ const ProductCard = ({
                 </span>
               </div>
             ))}
-          </div>
+          </div> */}
 
           {/* Footer (Price & CTA) */}
           <div className="flex items-center justify-between">
@@ -149,7 +149,11 @@ const ProductCard = ({
               {product.price}
             </span>
             <span className="font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-[#716a5c] flex items-center gap-2 transition-all duration-300 group-hover:gap-3 group-hover:text-[#2a2824]">
-              DISCOVER <MoveRight strokeWidth={1.5} className="w-4 h-4 opacity-70 group-hover:opacity-100" />
+              DISCOVER{" "}
+              <MoveRight
+                strokeWidth={1.5}
+                className="w-4 h-4 opacity-70 group-hover:opacity-100"
+              />
             </span>
           </div>
         </div>
@@ -325,30 +329,38 @@ export default function Home() {
 
   const faqs = [
     {
-      q: "What makes DRY DOWN different from regular detergent?",
-      a: "We replaced harsh chemical surfactants with plant-based enzymes and organic conditioning agents. Our fragrances are developed in Grasse, mirroring fine perfumery rather than synthetic household cleaners.",
+      q: "What makes DRY DOWN different from regular fabric conditioner?",
+      a: "DRY DOWN is a fine fragrance fabric conditioner. We use plant-based enzymes and organic conditioning agents instead of harsh chemical surfactants. Our scents are developed with perfume-grade essential oils, delivering luxury fragrance that lasts up to two weeks on fabric.",
     },
     {
-      q: "Are your formulations safe for delicate fabrics?",
-      a: "Yes. Our fabric conditioners are perfectly balanced to treat silk, wool, and cashmere without stripping their natural fibers. We recommend a gentle cycle for all intimates and luxury knits.",
+      q: "Is it safe for silk, wool, and cashmere?",
+      a: "Yes. Our formulations are perfectly balanced to treat delicate fabrics without stripping their natural fibres. We recommend a gentle cycle for all intimates and luxury knits.",
     },
     {
-      q: "How long does the fragrance last?",
-      a: "Unlike standard detergents where the scent evaporates post-dry, our encapsulated oils lock into the fabric weave. The aroma will softly emanate while worn and can linger for up to two weeks in storage.",
+      q: "How long does the fragrance last on clothes?",
+      a: "Our encapsulated oils lock into the fabric weave rather than evaporating after drying. The scent releases with every movement and can linger for up to two weeks — even in storage.",
     },
     {
       q: "Is DRY DOWN environmentally friendly?",
-      a: "Our formulas are 100% biodegradable and free of microplastics, parabens, and artificial dyes. We source our botanical ingredients sustainably and bottle our products in infinitely recyclable aluminum.",
+      a: "100%. Our formulas are fully biodegradable, free of microplastics, parabens, and artificial dyes. We source botanical ingredients sustainably and package in recycled polymer.",
+    },
+    {
+      q: "How do I make my clothes smell amazing after every wash?",
+      a: "Add one capful of DRYDOWN to the fabric conditioner compartment along with your regular detergent. The fragrance oils activate during the rinse cycle and infuse into every fibre.",
+    },
+    {
+      q: "Can I use DRYDOWN for hand washing?",
+      a: "Absolutely. Add one capful to approximately 5 litres of water, soak garments for 5 minutes, and there's no need for an extra rinse.",
     },
   ];
 
-  const campaignRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: campaignRef,
-    offset: ["start end", "end start"],
-  });
-  const leftMove = useTransform(scrollYProgress, [0, 1], [300, -300]);
-  const rightMove = useTransform(scrollYProgress, [0, 1], [-300, 300]);
+  // const campaignRef = useRef<HTMLElement>(null);
+  // const { scrollYProgress } = useScroll({
+  //   target: campaignRef,
+  //   offset: ["start end", "end start"],
+  // });
+  // const leftMove = useTransform(scrollYProgress, [0, 1], [300, -300]);
+  // const rightMove = useTransform(scrollYProgress, [0, 1], [-300, 300]);
 
   const labRef = useRef<HTMLElement>(null);
   const { scrollYProgress: labProgress } = useScroll({
@@ -384,13 +396,12 @@ export default function Home() {
             Est. 2026 &bull; Global
           </p>
           <h1 className="font-serif text-[3.5rem] leading-[1.1] md:text-[6rem] lg:text-[8rem] xl:text-9xl font-bold text-white mb-6 md:leading-none">
-            LAUNDRY,
+            Clothes that smell like intention.
             <br />
-            <span className="italic font-light opacity-90">ELEVATED.</span>
+            {/* <span className="italic font-light opacity-90">ELEVATED.</span> */}
           </h1>
           <p className="font-sans text-white/90 max-w-lg mx-auto mb-10 text-lg leading-relaxed font-medium">
-            Stop washing. Start caring. High-performance chemistry meets haute
-            couture fragrance.
+            Haute fragrance. Engineered into every fibre.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
@@ -405,12 +416,25 @@ export default function Home() {
 
       {/* VERSION 1: Minimalist Continuous Marquee */}
       <section className="border-y border-neutral-200 bg-white py-12 md:py-16 overflow-hidden flex flex-col items-center">
-        <h3 className="font-sans text-xs font-semibold uppercase tracking-[0.2em] mb-12 text-neutral-400">Version 1: Minimalist Flow</h3>
+        {/* <h3 className="font-sans text-xs font-semibold uppercase tracking-[0.2em] mb-12 text-neutral-400">
+          Version 1: Minimalist Flow
+        </h3> */}
         <div className="flex w-full overflow-hidden group">
           <div className="flex w-max animate-marquee group-hover:[animation-play-state:paused] whitespace-nowrap">
-            {[...sellingPoints, ...sellingPoints, ...sellingPoints, ...sellingPoints].map((point, i) => (
-              <div key={i} className="flex flex-col items-center text-center w-[280px] md:w-[400px] px-4 md:px-8 flex-shrink-0">
-                <point.icon strokeWidth={1} className="w-8 h-8 md:w-10 md:h-10 mb-4 md:mb-6 text-neutral-400 transition-transform duration-500 hover:scale-110 hover:text-brand-dark" />
+            {[
+              ...sellingPoints,
+              ...sellingPoints,
+              ...sellingPoints,
+              ...sellingPoints,
+            ].map((point, i) => (
+              <div
+                key={i}
+                className="flex flex-col items-center text-center w-[280px] md:w-[400px] px-4 md:px-8 flex-shrink-0"
+              >
+                <point.icon
+                  strokeWidth={1}
+                  className="w-8 h-8 md:w-10 md:h-10 mb-4 md:mb-6 text-neutral-400 transition-transform duration-500 hover:scale-110 hover:text-brand-dark"
+                />
                 <h4 className="font-sans text-[10px] md:text-xs font-semibold uppercase tracking-[0.2em] mb-3 md:mb-4 text-neutral-800 whitespace-normal">
                   {point.title}
                 </h4>
@@ -424,18 +448,30 @@ export default function Home() {
       </section>
 
       {/* VERSION 2: Separated Cards Marquee */}
-      <section className="border-b border-neutral-200 bg-neutral-50 py-12 md:py-16 overflow-hidden flex flex-col items-center">
-        <h3 className="font-sans text-xs font-semibold uppercase tracking-[0.2em] mb-12 text-neutral-400">Version 2: Separated Cards</h3>
+      {/* <section className="border-b border-neutral-200 bg-neutral-50 py-12 md:py-16 overflow-hidden flex flex-col items-center">
+        <h3 className="font-sans text-xs font-semibold uppercase tracking-[0.2em] mb-12 text-neutral-400">
+          Version 2: Separated Cards
+        </h3>
         <div className="relative flex w-full overflow-hidden group">
-          {/* Fading edges for a premium effect */}
           <div className="absolute inset-y-0 left-0 w-16 md:w-48 bg-gradient-to-r from-neutral-50 to-transparent z-10 pointer-events-none"></div>
           <div className="absolute inset-y-0 right-0 w-16 md:w-48 bg-gradient-to-l from-neutral-50 to-transparent z-10 pointer-events-none"></div>
-          
+
           <div className="flex w-max animate-marquee group-hover:[animation-play-state:paused]">
-            {[...sellingPoints, ...sellingPoints, ...sellingPoints, ...sellingPoints].map((point, i) => (
-              <div key={i} className="flex items-start text-left w-[300px] md:w-[450px] p-6 md:p-8 mx-3 md:mx-4 border border-neutral-200 rounded-2xl bg-white shadow-sm flex-shrink-0 transition-shadow hover:shadow-md cursor-default">
+            {[
+              ...sellingPoints,
+              ...sellingPoints,
+              ...sellingPoints,
+              ...sellingPoints,
+            ].map((point, i) => (
+              <div
+                key={i}
+                className="flex items-start text-left w-[300px] md:w-[450px] p-6 md:p-8 mx-3 md:mx-4 border border-neutral-200 rounded-2xl bg-white shadow-sm flex-shrink-0 transition-shadow hover:shadow-md cursor-default"
+              >
                 <div className="bg-neutral-100 p-3 md:p-4 rounded-full mr-4 md:mr-6 flex-shrink-0 group-hover:bg-brand-accent/10 transition-colors duration-500">
-                  <point.icon strokeWidth={1} className="w-5 h-5 md:w-6 md:h-6 text-neutral-600 transition-colors duration-500 group-hover:text-brand-accent" />
+                  <point.icon
+                    strokeWidth={1}
+                    className="w-5 h-5 md:w-6 md:h-6 text-neutral-600 transition-colors duration-500 group-hover:text-brand-accent"
+                  />
                 </div>
                 <div>
                   <h4 className="font-sans text-[10px] md:text-xs font-semibold uppercase tracking-[0.2em] mb-2 text-neutral-900 whitespace-normal">
@@ -449,21 +485,34 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* VERSION 3: High Contrast Dark Mode Marquee */}
-      <section className="bg-brand-dark py-12 md:py-16 overflow-hidden flex flex-col items-center text-brand-base">
-        <h3 className="font-sans text-xs font-semibold uppercase tracking-[0.2em] mb-12 text-brand-accent/70">Version 3: Dark Contrast</h3>
+      {/* <section className="bg-brand-dark py-12 md:py-16 overflow-hidden flex flex-col items-center text-brand-base">
+        <h3 className="font-sans text-xs font-semibold uppercase tracking-[0.2em] mb-12 text-brand-accent/70">
+          Version 3: Dark Contrast
+        </h3>
         <div className="relative flex w-full overflow-hidden group">
           <div className="absolute inset-y-0 left-0 w-16 md:w-32 bg-gradient-to-r from-brand-dark to-transparent z-10 pointer-events-none"></div>
           <div className="absolute inset-y-0 right-0 w-16 md:w-32 bg-gradient-to-l from-brand-dark to-transparent z-10 pointer-events-none"></div>
-          
+
           <div className="flex w-max animate-marquee group-hover:[animation-play-state:paused]">
-            {[...sellingPoints, ...sellingPoints, ...sellingPoints, ...sellingPoints].map((point, i) => (
-              <div key={i} className="flex flex-col items-center text-center w-[280px] md:w-[350px] px-4 md:px-8 flex-shrink-0 group/card cursor-default">
+            {[
+              ...sellingPoints,
+              ...sellingPoints,
+              ...sellingPoints,
+              ...sellingPoints,
+            ].map((point, i) => (
+              <div
+                key={i}
+                className="flex flex-col items-center text-center w-[280px] md:w-[350px] px-4 md:px-8 flex-shrink-0 group/card cursor-default"
+              >
                 <div className="relative mb-4 md:mb-6">
                   <div className="absolute inset-0 bg-brand-accent scale-150 blur-xl opacity-0 group-hover/card:opacity-20 transition-opacity duration-700"></div>
-                  <point.icon strokeWidth={1} className="relative z-10 w-8 h-8 md:w-10 md:h-10 text-brand-accent/50 group-hover/card:text-brand-accent transition-colors duration-500 group-hover/card:scale-110" />
+                  <point.icon
+                    strokeWidth={1}
+                    className="relative z-10 w-8 h-8 md:w-10 md:h-10 text-brand-accent/50 group-hover/card:text-brand-accent transition-colors duration-500 group-hover/card:scale-110"
+                  />
                 </div>
                 <h4 className="font-sans text-[10px] md:text-xs font-semibold uppercase tracking-[0.2em] mb-3 md:mb-4 text-white whitespace-normal group-hover/card:text-brand-accent transition-colors duration-500">
                   {point.title}
@@ -475,21 +524,23 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section id="collection" className="py-20 md:py-40 px-6 md:px-12">
         <div className="mx-auto max-w-[1400px]">
           <FadeIn>
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-12">
               <div className="max-w-2xl">
-                <h3 className="font-sans text-xs font-semibold uppercase tracking-[0.2em] mb-4 text-neutral-400">Variant 1</h3>
+                <h3 className="font-sans text-xs font-semibold uppercase tracking-[0.2em] mb-4 text-neutral-400">
+                  Variant 1
+                </h3>
                 <h2 className="text-[2.5rem] leading-[1.1] md:text-5xl lg:text-6xl font-serif font-light mb-8 tracking-tight">
-                  The Permanent Archive
+                  The Collection
                 </h2>
                 <p className="text-base md:text-lg text-neutral-500 font-light leading-relaxed">
-                  Our signature olfactory profiles, meticulously designed in
-                  Grasse. Each formula dictates a specific mood and honors a
-                  specific garment archetype.
+                  Fine fragrance for your laundry. Give your load a concentrated
+                  boost of fine fragrance that lasts long after the wash and dry
+                  cycle.
                 </p>
               </div>
             </div>
@@ -571,10 +622,20 @@ export default function Home() {
                 Modern Alchemy.
               </h2>
               <p className="font-sans text-brand-dark opacity-80 leading-relaxed mb-12 text-base md:text-lg max-w-lg">
-                We discarded the conventional chemical detergents that degrade
-                your most delicate fabrics. In their place, we utilized organic
-                chemistry and plant-based surfactants to craft fine fragrance
-                formulations that deeply nourish every weave.
+                Drydown was built on a simple observation — that the clothes you
+                wear carry scent longer, deeper, and more intimately than
+                anything you put on your skin. Yet for decades, that surface was
+                left to chance. To synthetic freshness that vanished by noon. To
+                chemicals that coated fabric rather than cared for it. We
+                changed that. Drydown is fine fragrance, engineered into fabric.
+                Each formula is built around a perfume-grade scent pyramid — top
+                notes, heart notes, base notes — carried in microscopic capsules
+                that bond to fibre and release with every movement, every hour,
+                long after the wash is over. Beneath the fragrance, a
+                plant-based conditioning base softens without residue,
+                preserving the hand and integrity of the fabric itself. The
+                result is clothing that doesn't just look considered. It smells
+                it.
               </p>
               <div className="relative w-3/4 max-w-sm h-[400px] shadow-2xl rounded-tr-3xl rounded-bl-3xl overflow-hidden border border-brand-dark/10">
                 <Image
@@ -638,7 +699,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section
+      {/* <section
         ref={campaignRef}
         id="campaign-section"
         className="relative w-full py-20 px-6 md:px-0 md:py-0 md:min-h-[150vh] bg-brand-base flex flex-col md:flex-row items-center justify-center overflow-hidden border-y border-brand-dark/10"
@@ -711,7 +772,7 @@ export default function Home() {
             />
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section className="py-16 md:py-24 bg-brand-accent text-brand-dark overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 mb-12 flex justify-between items-end">
@@ -723,19 +784,19 @@ export default function Home() {
         <div className="flex overflow-x-auto pb-8 gap-8 px-6 no-scrollbar snap-x">
           {[
             {
-              user: "Sarah J.",
+              user: "Priya S.",
               text: "The Burnt Sugar is addictive. I do laundry just to smell it.",
             },
             {
-              user: "Alexander V.",
+              user: "Vikram N.",
               text: "Washing my sheets with Acid Bloom is akin to opening a window in a high-end botanical garden.",
             },
             {
-              user: "Juliet R.",
+              user: "Ananya R.",
               text: "My cashmere sweaters have never felt or smelled more luxurious. Every wear feels like an occasion.",
             },
             {
-              user: "M. Chen",
+              user: "Arjun M.",
               text: "A serene, quiet luxury. It doesn't shout; it gently hums around you all day.",
             },
           ].map((r, i) => (
@@ -743,6 +804,18 @@ export default function Home() {
               key={i}
               className="min-w-[300px] md:min-w-[400px] bg-white p-10 shadow-lg snap-center flex-shrink-0 border-2 border-brand-dark"
             >
+              <div className="flex gap-1 mb-5">
+                {[1, 2, 3, 4, 5].map((s) => (
+                  <svg
+                    key={s}
+                    className="w-3.5 h-3.5"
+                    viewBox="0 0 20 20"
+                    fill="#C8A84B"
+                  >
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+              </div>
               <div className="text-brand-accent text-5xl mb-4 font-serif leading-none">
                 &ldquo;
               </div>
@@ -757,7 +830,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="faq" className="py-16 md:py-32 bg-brand-base border-t border-brand-dark/10">
+      <section
+        id="faq"
+        className="py-16 md:py-32 bg-brand-base border-t border-brand-dark/10"
+      >
         <div className="max-w-5xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
             <div className="lg:col-span-4 flex flex-col items-start">
@@ -838,15 +914,11 @@ export default function Home() {
                   The Inner Circle
                 </p>
                 <h2 className="font-serif text-[2.5rem] leading-[1.1] md:text-5xl lg:text-6xl text-white mb-6 md:leading-tight drop-shadow-sm">
-                  Unlock the Ritual.
+                  Be the First to Know.
                 </h2>
                 <p className="font-sans text-white/60 mb-12 text-base md:text-lg leading-relaxed max-w-md font-light">
-                  We invite you to join our private society. Provide your
-                  correspondence details below to receive a{" "}
-                  <span className="text-brand-accent font-serif italic text-xl">
-                    complimentary discovery set
-                  </span>
-                  , curated directly from our ateliers in Grasse.
+                  New scents. Limited editions. Members-only drops. Get first
+                  access before anyone else.
                 </p>
 
                 <form
@@ -871,12 +943,12 @@ export default function Home() {
                     type="submit"
                     className="mt-4 w-full md:w-auto self-start bg-brand-accent text-brand-dark md:px-12 px-6 py-5 font-sans font-bold text-xs uppercase tracking-[0.2em] hover:bg-white hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all duration-300"
                   >
-                    Request Sample
+                    JOIN WAITLIST
                   </button>
                 </form>
 
                 <p className="font-sans text-[10px] text-white/30 mt-10 tracking-widest uppercase">
-                  Limited availability. One per household.
+                  Fine print: No spam — just early access to limited drops.
                 </p>
               </div>
             </div>

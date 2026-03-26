@@ -18,8 +18,17 @@ export type ProductProps = {
   notes: number[];
   imgGradient: string;
   topNotes?: string;
+  topNotesDesc?: string;
   heartNotes?: string;
+  heartNotesDesc?: string;
   baseNotes?: string;
+  baseNotesDesc?: string;
+  fact1?: string;
+  fact1Desc?: string;
+  fact2?: string;
+  fact2Desc?: string;
+  fact3?: string;
+  fact3Desc?: string;
 };
 
 export const products: ProductProps[] = [
@@ -66,12 +75,12 @@ export const products: ProductProps[] = [
   {
     id: "burnt-sugar",
     name: "Burnt Sugar",
-    price: "₹380.00",
+    price: "₹599.00",
     colorHex: "#6f2a33",
-    colorName: "Deep Caramel & Wood",
+    colorName: "Warm. Gourmand. Intense.",
     shortDesc: "A dark, rich ode to gourmand warmth and toasted vanilla.",
     description:
-      "Our signature 'Burnt Sugar' fabric conditioner weaves a tapestry of dark caramel, amber, and aged woods directly into your linens. A sophisticated, long-lasting aroma profile wrapped in an advanced softening base that preserves textile integrity over 25 premium washes.",
+      "Some scents are forgettable. Burnt Sugar is not. A deeply gourmand fragrance that opens with the brightness of Blood Mandarin and Spun Sugar, softens into Sambac Jasmine and Dark Plum, and settles into a skin-close warmth of Melted Vanilla and Precious Woods. Designed to stay with you — not just through the wash, but through the day.",
     size: "NET QTY 750 ML",
     features: ["Deep Care", "Clean Wear", "Lasting Scent", "25 Premium Washes"],
     pros: [
@@ -85,7 +94,7 @@ export const products: ProductProps[] = [
     ],
     review: {
       text: "My cashmere sweaters have never felt or smelled more luxurious. Every wear feels like an occasion.",
-      author: "Juliet R.",
+      author: "Priya S.",
     },
     bgColor: "bg-[#6f2a33]",
     textColor: "text-[#F5F2EB]",
@@ -93,14 +102,26 @@ export const products: ProductProps[] = [
     image: "/BURNT_SUGAR.webp",
     notes: [80, 20, 10, 95, 60], // Woody, Floral, Fresh, Sweet, Spicy (mock interpretation)
     imgGradient: "linear-gradient(135deg, #6f2a33 0%, #3a151b 100%)",
-    topNotes: "Toasted Macadamia, Sea Salt",
-    heartNotes: "Caramelized Sugar, Heliotrope",
-    baseNotes: "Madagascar Vanilla, White Musk",
+    topNotes: "Blood Mandarin · Spun Sugar · Crisp Apple",
+    topNotesDesc: "bright, citrus-led, the first impression",
+    heartNotes: "Sambac Jasmine · Dark Plum · Creamy Gardenia",
+    heartNotesDesc: "dark, velvety, where the warmth begins",
+    baseNotes: "Melted Vanilla · Skin Musks · Precious Woods",
+    baseNotesDesc: "skin-close, addictive, what people remember",
+    fact1: "Haute Fragrance",
+    fact1Desc:
+      "Perfume-grade essential oils built around a proper top, heart, base pyramid. Not a synthetic freshness — a considered scent that evolves on fabric over time.",
+    fact2: "Bio-Soft Technology",
+    fact2Desc:
+      "Plant-based cationic surfactants smooth the fibre cuticle, creating softness without silicone residue. Breathable, true to hand, wash after wash.",
+    fact3: "Fragrance Lock Technology",
+    fact3Desc:
+      "Polymer microcapsules bond to fabric during the rinse cycle and rupture with movement and heat. Fragrance releases continuously — not just when clothes come out of the dryer.",
   },
   {
     id: "acid-bloom",
     name: "Acid Bloom",
-    price: "₹380.00",
+    price: "₹599.00",
     colorHex: "#4c7c42",
     colorName: "Vibrant Green Flora",
     shortDesc:
@@ -135,7 +156,7 @@ export const products: ProductProps[] = [
   {
     id: "pale-ash",
     name: "Pale Ash",
-    price: "₹380.00",
+    price: "₹599.00",
     colorHex: "#6d5f83",
     colorName: "Ethereal Lavender Dust",
     shortDesc:
@@ -171,7 +192,7 @@ export const products: ProductProps[] = [
   {
     id: "butter-petal",
     name: "Butter Petal",
-    price: "₹380.00",
+    price: "₹599.00",
     colorHex: "#c9884e",
     colorName: "Warm Golden Tan",
     shortDesc:

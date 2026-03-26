@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Playfair_Display, Syne } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
-import CustomCursor from "../components/CustomCursor";
 import Navbar from "../components/Navbar";
 import { Instagram, Twitter, Facebook } from "lucide-react";
 
@@ -33,7 +32,6 @@ export default function RootLayout({
       <body
         className={`${playfair.variable} ${syne.variable} font-sans bg-brand-base text-brand-dark antialiased selection:bg-brand-accent selection:text-white`}
       >
-        <CustomCursor />
         <Navbar />
         <main id="app-container" className="pt-20 min-h-screen">
           {children}

@@ -42,7 +42,6 @@ ChartJS.register(
   Legend,
 );
 
-// --- Lightweight Luxury Animation Helpers ---
 const FadeIn = ({
   children,
   delay = 0,
@@ -257,7 +256,7 @@ export default function SingleProductClient({
       {
         label: "Scent Notes",
         data: product.notes,
-        backgroundColor: `${product.colorHex}25`, // Soft opacity
+        backgroundColor: `${product.colorHex}25`, 
         borderColor: product.colorHex,
         borderWidth: 1.5,
         pointBackgroundColor: product.bgColor
@@ -268,7 +267,7 @@ export default function SingleProductClient({
         pointHoverBorderColor: product.colorHex,
         pointRadius: 4,
         pointBorderWidth: 2,
-        tension: 0.4, // Smooth curve
+        tension: 0.4, 
       },
     ],
   };
@@ -316,13 +315,11 @@ export default function SingleProductClient({
       ref={containerRef}
       className="bg-brand-base overflow-x-clip selection:bg-brand-dark selection:text-white"
     >
-      {/* --- HERO SECTION --- */}
       <section className="relative min-h-screen pt-6 pb-20 px-6 flex flex-col justify-center">
         <motion.div
           style={{ y: heroY, opacity: heroOpacity }}
           className="max-w-7xl mx-auto w-full will-change-transform"
         >
-          {/* Nav Breadcrumb */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -347,7 +344,6 @@ export default function SingleProductClient({
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 xl:gap-24 items-center">
-            {/* Visual Column */}
             <div className="lg:col-span-5 flex flex-col gap-4 md:gap-6 w-full">
               <div className="h-[50vh] min-h-[350px] lg:min-h-[500px] lg:h-[75vh] [perspective:1200px] w-full relative">
                 <motion.div
@@ -461,7 +457,6 @@ export default function SingleProductClient({
                 </motion.div>
               </div>
 
-              {/* Thumbnails below */}
               {productGallery.length > 1 && (
                 <FadeIn delay={0.4}>
                   <div className="grid grid-cols-3 gap-2 sm:gap-4 w-full">
@@ -491,7 +486,6 @@ export default function SingleProductClient({
               )}
             </div>
 
-            {/* Details Column */}
             <div className="lg:col-span-7 flex flex-col justify-center py-8">
               <FadeIn delay={0.2}>
                 <div className="flex items-center gap-4 mb-8">
@@ -520,7 +514,6 @@ export default function SingleProductClient({
                 </p>
               </FadeIn>
 
-              {/* Product Facts */}
               <FadeIn delay={0.6}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-8 border-t border-brand-dark/10 pt-8 mt-4">
                   <div className="group">
@@ -566,12 +559,29 @@ export default function SingleProductClient({
                   </span>
                 </button>
               </FadeIn>
+
+              <FadeIn delay={1.0}>
+                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4 gap-2 pt-5">
+                  {[
+                    "25 Premium Washes",
+                    "750ml",
+                    "Fall / Winter",
+                    "HE Compatible",
+                  ].map((fact) => (
+                    <span
+                      key={fact}
+                      className="flex items-center justify-center text-center border border-brand-dark/15 bg-white/60 backdrop-blur-sm px-3 py-2.5 rounded-full font-sans text-[9px] md:text-[10px] font-semibold uppercase tracking-[0.15em] text-brand-dark/70"
+                    >
+                      {fact}
+                    </span>
+                  ))}
+                </div>
+              </FadeIn>
             </div>
           </div>
         </motion.div>
       </section>
 
-      {/* --- INGREDIENTS & SCENT PROFILE SECTION --- */}
       <section className="relative py-16 lg:py-32 bg-white/80 backdrop-blur-sm rounded-3xl md:rounded-[3rem] shadow-[0_-20px_50px_rgba(0,0,0,0.02)] border-t border-brand-dark/5 mx-2 sm:mx-4 md:mx-10 my-10 z-10">
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <FadeIn>
@@ -592,7 +602,6 @@ export default function SingleProductClient({
           </FadeIn>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 xl:gap-24 items-center">
-            {/* Left: Scent Notes */}
             <div className="lg:col-span-6 space-y-12">
               {[
                 {
@@ -643,13 +652,11 @@ export default function SingleProductClient({
               ))}
             </div>
 
-            {/* Right: Radar Chart Analysis */}
             <div className="lg:col-span-6">
               <FadeIn
                 delay={0.6}
                 className="bg-brand-base/50 p-6 sm:p-10 md:p-14 rounded-[2rem] border border-brand-dark/5 relative overflow-hidden group"
               >
-                {/* Subtle animated background gradient */}
                 <div
                   className="absolute inset-0 opacity-10 transition-opacity duration-1000 group-hover:opacity-20"
                   style={{
@@ -677,7 +684,6 @@ export default function SingleProductClient({
         </div>
       </section>
 
-      {/* --- ENGINEERING SECTION --- */}
       <section className="max-w-[90rem] mx-auto py-16 lg:py-32 px-4 sm:px-6">
         <FadeIn>
           <div className="text-center mb-12 md:mb-24 flex flex-col items-center">
@@ -701,18 +707,18 @@ export default function SingleProductClient({
           {[
             {
               icon: <Droplet className="w-8 h-8 stroke-[1.5]" />,
-              title: "Bio-Soft Technology",
-              desc: "Plant-based surfactants bond to natural fibers, creating a microscopic layer of velvet-like softness without synthetic buildup.",
+              title: "Haute Fragrance",
+              desc: "Perfume-grade essential oils built around a proper top, heart, base pyramid. Not a synthetic freshness — a considered scent that evolves on fabric over time.",
             },
             {
               icon: <Wind className="w-8 h-8 stroke-[1.5]" />,
-              title: "Breathable Scent",
-              desc: `Oxygen-activated micro-capsules delicately release warm notes of ${product.name.toLowerCase()} with the simple friction of movement.`,
+              title: "Bio-Soft Technology",
+              desc: `Plant-based cationic surfactants smooth the fibre cuticle, creating softness without silicone residue. Breathable, true to hand, wash after wash.`,
             },
             {
               icon: <Leaf className="w-8 h-8 stroke-[1.5]" />,
-              title: "Earth Conscious",
-              desc: "Fully biodegradable, non-toxic formulations packaged elegantly in our signature recycled glass-inspired polymer vessels.",
+              title: "Fragrance Lock Technology",
+              desc: "Polymer microcapsules bond to fabric during the rinse cycle and rupture with movement and heat. Fragrance releases continuously — not just when clothes come out of the dryer.",
             },
           ].map((feature, idx) => (
             <StaggerItem key={idx}>
@@ -741,13 +747,12 @@ export default function SingleProductClient({
         </StaggerContainer>
       </section>
 
-      {/* --- CRAFTED IN GRASSE --- */}
       <motion.section
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 1.5 }}
-        className="w-full relative h-[60vh] min-h-[500px] md:min-h-[600px] flex items-center overflow-hidden rounded-[2rem] md:rounded-[3rem] max-w-[90rem] mx-2 md:mx-auto shadow-[0_30px_60px_rgba(0,0,0,0.15)] mb-16 md:mb-32"
+        className="w-full hidden relative h-[60vh] min-h-[500px] md:min-h-[600px] flex items-center overflow-hidden rounded-[2rem] md:rounded-[3rem] max-w-[90rem] mx-2 md:mx-auto shadow-[0_30px_60px_rgba(0,0,0,0.15)] mb-16 md:mb-32"
       >
         <div className="absolute inset-0 z-0 bg-brand-dark">
           <motion.div
@@ -774,13 +779,13 @@ export default function SingleProductClient({
               Origin Story
             </p>
             <h2 className="text-white text-[3.5rem] leading-[0.9] sm:text-6xl md:text-7xl lg:text-[8rem] flex flex-col select-none tracking-tight font-serif font-bold mb-8 md:mb-12">
-              <span className="opacity-95">CRAFTED</span>
-              <span className="opacity-95">IN</span>
+              <span className="opacity-95">THE </span>
+              {/* <span className="opacity-95">FORMULA</span> */}
               <span
                 className="italic mt-2 md:mt-4 drop-shadow-2xl"
                 style={{ color: product.colorHex }}
               >
-                GRASSE
+                FORMULA
               </span>
             </h2>
             <RevealLine
@@ -788,16 +793,16 @@ export default function SingleProductClient({
               className="max-w-[8rem] md:max-w-[10rem] mb-8 md:mb-12 mx-auto md:mx-0"
             />
             <p className="text-white/90 max-w-lg font-sans font-medium text-base md:text-lg leading-relaxed mx-auto md:mx-0 px-2 md:px-0">
-              Every formulation is infused with fine perfume-grade absolute
-              oils, meticulously developed and aged in the historic fragrance
-              capital of the world.
+              Each Drydown formulation is built around perfume-grade fragrance
+              compounds — the same quality of raw materials used by fine
+              fragrance houses. Designed in India. Made for the way you live.
             </p>
           </FadeIn>
         </div>
       </motion.section>
 
       {/* OLFACTORY JOURNEY */}
-      <div className="max-w-[90rem] mx-auto mt-16 md:mt-32 px-6 mb-16 md:mb-32 overflow-hidden">
+      {/* <div className="max-w-[90rem] mx-auto mt-16 md:mt-32 px-6 mb-16 md:mb-32 overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-20 items-center">
           <FadeIn>
             <p className="font-sans text-xs font-bold uppercase tracking-widest mb-4 md:mb-6 text-brand-accent flex items-center gap-4">
@@ -823,9 +828,7 @@ export default function SingleProductClient({
                       {tier.notes.join(", ")}
                     </span>
                   </div>
-                  {/* Base line */}
                   <div className="w-full h-[2px] bg-brand-dark/10 relative overflow-hidden">
-                    {/* Animated Fill Line */}
                     <div
                       className="absolute top-0 left-0 h-full w-0 group-hover:w-full transition-all duration-700 ease-out"
                       style={{
@@ -839,32 +842,22 @@ export default function SingleProductClient({
             </div>
           </FadeIn>
 
-          {/* Right side circle visual */}
           <FadeIn
             delay={0.3}
             className="relative w-full aspect-square max-w-[600px] mx-auto flex items-center justify-center overflow-hidden scale-90 sm:scale-100"
           >
-            {/* Ambient Glow */}
-            {/* <div
-              className="absolute inset-20 rounded-full blur-[120px] opacity-20"
-              style={{ backgroundColor: product.colorHex }}
-            ></div> */}
-
-            {/* Outer Circle Ring */}
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
               className="absolute inset-4 rounded-full border-2 border-dashed border-brand-dark/10"
             ></motion.div>
 
-            {/* Optional Inner Ring */}
             <motion.div
               animate={{ rotate: -360 }}
               transition={{ duration: 70, repeat: Infinity, ease: "linear" }}
               className="absolute inset-16 rounded-full border border-brand-dark/[0.04]"
             ></motion.div>
 
-            {/* Center text */}
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               whileInView={{ scale: 1, opacity: 1 }}
@@ -884,7 +877,6 @@ export default function SingleProductClient({
               </div>
             </motion.div>
 
-            {/* Orbiting Icons */}
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
@@ -945,7 +937,434 @@ export default function SingleProductClient({
             </motion.div>
           </FadeIn>
         </div>
-      </div>
+      </div> */}
+
+      {/* --- CLEAN CLAIMS STRIP --- */}
+      <section className="border-y border-brand-dark/10 bg-white py-5 overflow-hidden">
+        <div className="flex w-full overflow-hidden">
+          <div className="flex w-max animate-marquee gap-3 px-3">
+            {[
+              "Plant Based",
+              "Biodegradable",
+              "No Microplastics",
+              "Residue Free",
+              "HE Compatible",
+              "Safe on Delicates",
+              "Vegan",
+              "Cruelty Free",
+              "Plant Based",
+              "Biodegradable",
+              "No Microplastics",
+              "Residue Free",
+              "HE Compatible",
+              "Safe on Delicates",
+              "Vegan",
+              "Cruelty Free",
+            ].map((claim, i) => (
+              <span
+                key={i}
+                className="inline-flex items-center gap-2 border border-brand-dark/15 bg-brand-base/60 px-5 py-2.5 rounded-full font-sans text-[10px] md:text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-dark/70 whitespace-nowrap flex-shrink-0"
+              >
+                <span
+                  className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: product.colorHex }}
+                />
+                {claim}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- HOW TO USE SECTION --- */}
+      <section className="max-w-[90rem] mx-auto py-16 md:py-28 px-6">
+        <FadeIn>
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 md:mb-20 gap-6">
+            <div>
+              <p className="font-sans text-xs font-bold uppercase tracking-[0.3em] mb-4 text-brand-accent flex items-center gap-3">
+                <span className="w-8 h-[1.5px] bg-brand-accent/50" />
+                The Ritual
+              </p>
+              <h2 className="font-serif font-light text-[2.5rem] leading-[1.05] md:text-[4rem] lg:text-[5rem] text-brand-dark tracking-tighter">
+                How to Use
+              </h2>
+            </div>
+            <p className="font-sans text-sm font-light text-brand-dark/55 max-w-sm leading-relaxed">
+              Three simple steps. One lasting impression.
+            </p>
+          </div>
+        </FadeIn>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-px border border-brand-dark/10 bg-brand-dark/10">
+          {[
+            {
+              step: "01",
+              heading: "Load & Wash",
+              body: "Load your wash and add your regular detergent as normal. No changes to your usual routine required.",
+            },
+            {
+              step: "02",
+              heading: "Add Burnt Sugar",
+              body: `Pour one cap (30ml) of ${product.name} into the fabric softener compartment. Do not mix directly with detergent.`,
+            },
+            {
+              step: "03",
+              heading: "Wear the Scent",
+              body: "Wash, dry, and wear. Fragrance releases with every movement — all day, every wear.",
+            },
+          ].map((item, i) => (
+            <FadeIn key={i} delay={i * 0.15}>
+              <div className="group relative bg-brand-base p-8 md:p-12 lg:p-16 flex flex-col h-full border-b md:border-b-0 border-brand-dark/10 hover:bg-white transition-colors duration-500">
+                {/* Step Number */}
+                <span
+                  className="font-serif text-[5rem] md:text-[6rem] leading-none font-light mb-6 select-none transition-colors duration-500"
+                  style={{ color: `${product.colorHex}30` }}
+                >
+                  {item.step}
+                </span>
+                {/* Divider */}
+                <div
+                  className="w-8 h-[2px] mb-8 transition-all duration-500 group-hover:w-16"
+                  style={{ backgroundColor: product.colorHex }}
+                />
+                <h3 className="font-serif text-2xl md:text-3xl text-brand-dark mb-5 tracking-tight">
+                  {item.heading}
+                </h3>
+                <p className="font-sans text-sm md:text-base text-brand-dark/60 font-light leading-relaxed flex-grow">
+                  {item.body}
+                </p>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+
+        <FadeIn delay={0.4}>
+          <div className="mt-6 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6 border border-brand-dark/10 bg-white/50 backdrop-blur-sm px-6 py-5">
+            <span
+              className="font-sans text-[10px] font-bold uppercase tracking-[0.2em] whitespace-nowrap"
+              style={{ color: product.colorHex }}
+            >
+              Pro Tip
+            </span>
+            <span className="font-sans text-xs md:text-sm text-brand-dark/65 font-light leading-relaxed">
+              For intensified fragrance, use 1.5 caps. Compatible with
+              front-load, top-load and hand wash.
+            </span>
+          </div>
+        </FadeIn>
+      </section>
+
+      {/* ========================================= */}
+      {/* REVIEWS SECTION - VARIANT 1 (SOFT CARDS)  */}
+      {/* ========================================= */}
+      <section className="bg-white text-brand-dark py-20 px-6 border-b border-brand-dark/10 relative">
+        <div className="absolute top-4 left-6 py-1 px-3 bg-red-500 text-white text-[10px] font-bold uppercase tracking-widest z-50 rounded">
+          Variant 1: Soft Cards
+        </div>
+        <FadeIn className="max-w-[90rem] mx-auto mb-20 md:mb-28 text-center pt-8">
+          <p className="font-sans text-xs font-bold uppercase tracking-[0.3em] mb-8 text-brand-accent flex items-center justify-center gap-3">
+            <span className="w-8 h-[1.5px] bg-brand-accent/40" />
+            Word on the Street
+            <span className="w-8 h-[1.5px] bg-brand-accent/40" />
+          </p>
+          <blockquote className="font-serif font-light text-[2.2rem] leading-[1.15] sm:text-5xl md:text-6xl lg:text-7xl text-brand-dark max-w-5xl mx-auto tracking-tight relative">
+            <span className="text-brand-accent opacity-20 font-serif text-[6rem] md:text-[8rem] leading-none block -mb-8">
+              &ldquo;
+            </span>
+            I do laundry now just to smell it.
+          </blockquote>
+          <p className="font-sans text-[11px] font-bold uppercase tracking-[0.3em] text-brand-dark/40 mt-8">
+            — Early Adopter, Mumbai
+          </p>
+        </FadeIn>
+
+        <div className="max-w-[90rem] mx-auto mb-16 md:mb-20 border-t border-brand-dark/10" />
+
+        <div className="max-w-[90rem] mx-auto">
+          <FadeIn className="mb-12 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <h3 className="font-serif font-light text-3xl md:text-4xl text-brand-dark tracking-tight">
+              Customer Reviews
+            </h3>
+            <div className="flex items-center gap-3">
+              <div className="flex gap-1">
+                {[1, 2, 3, 4, 5].map((s) => (
+                  <svg
+                    key={s}
+                    className="w-4 h-4"
+                    viewBox="0 0 20 20"
+                    fill="#C8A84B"
+                  >
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+              </div>
+              <span className="font-sans text-[11px] font-bold uppercase tracking-widest text-brand-dark/50">
+                5.0 &nbsp;·&nbsp; 3 reviews
+              </span>
+            </div>
+          </FadeIn>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
+            {[
+              {
+                author: "Priya S.",
+                location: "Bangalore",
+                rating: 5,
+                date: "March 2026",
+                text: "My cashmere sweaters have never felt or smelled more luxurious. Every wear feels like an occasion.",
+              },
+              {
+                author: "Arjun M.",
+                location: "Mumbai",
+                rating: 5,
+                date: "February 2026",
+                text: "The Burnt Sugar is addictive. I do laundry just to smell it. Never going back to regular conditioner.",
+              },
+              {
+                author: "Ananya R.",
+                location: "Delhi",
+                rating: 5,
+                date: "March 2026",
+                text: "A serene, quiet luxury. It doesn't shout; it gently hums around you all day. Incredible on silk.",
+              },
+            ].map((review, i) => (
+              <FadeIn key={i} delay={i * 0.12}>
+                <div className="flex flex-col h-full bg-brand-base/40 border border-brand-dark/5 p-7 md:p-8 rounded-[2rem] hover:shadow-[0_15px_40px_rgba(0,0,0,0.04)] transition-all duration-500 group">
+                  <div className="flex gap-1 mb-6">
+                    {Array.from({ length: review.rating }).map((_, s) => (
+                      <svg
+                        key={s}
+                        className="w-3.5 h-3.5"
+                        viewBox="0 0 20 20"
+                        fill="#C8A84B"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <p className="font-serif text-lg md:text-xl text-brand-dark/90 leading-snug flex-grow mb-8 group-hover:text-brand-dark transition-colors duration-500">
+                    &ldquo;{review.text}&rdquo;
+                  </p>
+                  <div className="border-t border-brand-dark/10 pt-5 flex items-end justify-between">
+                    <div>
+                      <p className="font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-brand-dark/80">
+                        {review.author}
+                      </p>
+                      <p className="font-sans text-[10px] uppercase tracking-widest text-brand-dark/40 mt-1">
+                        {review.location}
+                      </p>
+                    </div>
+                    <p className="font-sans text-[10px] uppercase tracking-widest text-brand-dark/30">
+                      {review.date}
+                    </p>
+                  </div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================== */}
+      {/* REVIEWS SECTION - VARIANT 2 (MINIMALIST LINES) */}
+      {/* ============================================== */}
+      <section className="bg-[#FAF9F7] text-brand-dark py-20 px-6 border-b border-brand-dark/10 relative">
+        <div className="absolute top-4 left-6 py-1 px-3 bg-red-500 text-white text-[10px] font-bold uppercase tracking-widest z-50 rounded">
+          Variant 2: Line-Based
+        </div>
+        <div className="max-w-[90rem] mx-auto pt-8">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-12 lg:gap-20">
+            {/* Left: Pull Quote & Rating */}
+            <FadeIn className="flex flex-col justify-between">
+              <div>
+                <p className="font-sans text-xs font-bold uppercase tracking-[0.3em] mb-6 text-brand-accent flex items-center gap-3">
+                  <span className="w-8 h-[1.5px] bg-brand-accent/40" />
+                  Word on the Street
+                </p>
+                <blockquote className="font-serif font-light text-[2.5rem] leading-[1.1] sm:text-5xl text-brand-dark tracking-tight mb-6">
+                  &ldquo;I do laundry now just to smell it.&rdquo;
+                </blockquote>
+                <p className="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-brand-dark/40">
+                  — Early Adopter, Mumbai
+                </p>
+              </div>
+
+              <div className="mt-12 lg:mt-0 pt-8 border-t border-brand-dark/10">
+                <div className="flex items-center gap-3">
+                  <div className="flex gap-1">
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <svg
+                        key={s}
+                        className="w-5 h-5"
+                        viewBox="0 0 20 20"
+                        fill="#C8A84B"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <span className="font-sans text-xs font-bold uppercase tracking-widest text-brand-dark/50">
+                    5.0 from 84 reviews
+                  </span>
+                </div>
+              </div>
+            </FadeIn>
+
+            {/* Right: Review List */}
+            <div className="flex flex-col">
+              {[
+                {
+                  author: "Priya S.",
+                  location: "Bangalore",
+                  rating: 5,
+                  date: "March 2026",
+                  text: "My cashmere sweaters have never felt or smelled more luxurious. Every wear feels like an occasion.",
+                },
+                {
+                  author: "Arjun M.",
+                  location: "Mumbai",
+                  rating: 5,
+                  date: "February 2026",
+                  text: "The Burnt Sugar is addictive. I do laundry just to smell it. Never going back to regular conditioner.",
+                },
+                {
+                  author: "Ananya R.",
+                  location: "Delhi",
+                  rating: 5,
+                  date: "March 2026",
+                  text: "A serene, quiet luxury. It doesn't shout; it gently hums around you all day. Incredible on silk.",
+                },
+              ].map((review, i) => (
+                <FadeIn key={i} delay={i * 0.1}>
+                  <div className="py-8 border-b border-brand-dark/10 group">
+                    <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-4">
+                      <div className="flex items-center gap-4">
+                        <div className="flex gap-1">
+                          {Array.from({ length: review.rating }).map((_, s) => (
+                            <svg
+                              key={s}
+                              className="w-3.5 h-3.5"
+                              viewBox="0 0 20 20"
+                              fill="#C8A84B"
+                            >
+                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                          ))}
+                        </div>
+                        <p className="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-brand-dark">
+                          {review.author}{" "}
+                          <span className="text-brand-dark/40 font-normal">
+                            ({review.location})
+                          </span>
+                        </p>
+                      </div>
+                      <p className="font-sans text-[10px] uppercase tracking-widest text-brand-dark/30">
+                        {review.date}
+                      </p>
+                    </div>
+                    <p className="font-serif text-[1.15rem] text-brand-dark/80 leading-relaxed group-hover:text-brand-dark transition-colors duration-300">
+                      {review.text}
+                    </p>
+                  </div>
+                </FadeIn>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================= */}
+      {/* REVIEWS SECTION - VARIANT 3 (BADGE STYLE) */}
+      {/* ========================================= */}
+      <section className="bg-white text-brand-dark py-20 px-6 overflow-hidden relative">
+        <div className="absolute top-4 left-6 py-1 px-3 bg-red-500 text-white text-[10px] font-bold uppercase tracking-widest z-50 rounded">
+          Variant 3: Colored Accent Cards
+        </div>
+        <FadeIn className="max-w-[90rem] mx-auto text-center mb-16 pt-8">
+          <p className="font-sans text-xs font-bold uppercase tracking-[0.3em] mb-4 text-brand-accent">
+            Customer Reviews
+          </p>
+          <h3 className="font-serif font-light text-4xl md:text-5xl text-brand-dark tracking-tight mb-8">
+            Word on the Street
+          </h3>
+          <div className="flex items-center justify-center gap-3">
+            <div className="flex gap-1">
+              {[1, 2, 3, 4, 5].map((s) => (
+                <svg
+                  key={s}
+                  className="w-5 h-5"
+                  viewBox="0 0 20 20"
+                  fill="#C8A84B"
+                >
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
+            </div>
+          </div>
+        </FadeIn>
+
+        <div className="max-w-[90rem] mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            {
+              author: "Priya S.",
+              location: "Bangalore",
+              rating: 5,
+              date: "March 2026",
+              text: "My cashmere sweaters have never felt or smelled more luxurious. Every wear feels like an occasion.",
+            },
+            {
+              author: "Arjun M.",
+              location: "Mumbai",
+              rating: 5,
+              date: "February 2026",
+              text: "The Burnt Sugar is addictive. I do laundry just to smell it. Never going back to regular conditioner.",
+            },
+            {
+              author: "Ananya R.",
+              location: "Delhi",
+              rating: 5,
+              date: "March 2026",
+              text: "A serene, quiet luxury. It doesn't shout; it gently hums around you all day. Incredible on silk.",
+            },
+          ].map((review, i) => (
+            <FadeIn key={i} delay={i * 0.1}>
+              <div
+                className="flex flex-col h-full p-8 rounded-[1rem] transition-transform duration-500 hover:-translate-y-2 relative overflow-hidden"
+                style={{
+                  backgroundColor: `${product.colorHex}08`,
+                  border: `1px solid ${product.colorHex}20`,
+                }}
+              >
+                <div className="flex gap-1 mb-6 relative z-10">
+                  {Array.from({ length: review.rating }).map((_, s) => (
+                    <svg
+                      key={s}
+                      className="w-3 h-3"
+                      viewBox="0 0 20 20"
+                      fill="#C8A84B"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="font-serif text-lg text-brand-dark/80 leading-snug flex-grow mb-8 relative z-10 font-medium">
+                  &ldquo;{review.text}&rdquo;
+                </p>
+                <div className="pt-4 flex items-end justify-between relative z-10">
+                  <div>
+                    <p className="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-brand-dark">
+                      {review.author}
+                    </p>
+                  </div>
+                  <p className="font-sans text-[10px] uppercase tracking-widest text-brand-dark/40">
+                    {review.date}
+                  </p>
+                </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </section>
 
       {otherProducts.length > 0 && (
         <section className="relative py-16 md:py-28 border-t border-brand-dark/10 overflow-hidden">
@@ -958,7 +1377,7 @@ export default function SingleProductClient({
                     Other Products
                   </p>
                   <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-brand-dark leading-[0.95] tracking-tight">
-                    Continue through the archive.
+                    Not your scent? The collection has two more.
                   </h2>
                 </div>
                 <p className="font-sans text-brand-dark/65 text-sm md:text-base leading-relaxed max-w-xl">
