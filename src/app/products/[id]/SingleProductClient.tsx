@@ -1057,7 +1057,7 @@ export default function SingleProductClient({
       {/* ========================================= */}
       {/* REVIEWS SECTION - VARIANT 1 (SOFT CARDS)  */}
       {/* ========================================= */}
-      <section className="bg-white text-brand-dark py-20 px-6 border-b border-brand-dark/10 relative">
+      {/* <section className="bg-white text-brand-dark py-20 px-6 border-b border-brand-dark/10 relative">
         <div className="absolute top-4 left-6 py-1 px-3 bg-red-500 text-white text-[10px] font-bold uppercase tracking-widest z-50 rounded">
           Variant 1: Soft Cards
         </div>
@@ -1163,18 +1163,17 @@ export default function SingleProductClient({
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* ============================================== */}
       {/* REVIEWS SECTION - VARIANT 2 (MINIMALIST LINES) */}
       {/* ============================================== */}
-      <section className="bg-[#FAF9F7] text-brand-dark py-20 px-6 border-b border-brand-dark/10 relative">
+      {/* <section className="bg-[#FAF9F7] text-brand-dark py-20 px-6 border-b border-brand-dark/10 relative">
         <div className="absolute top-4 left-6 py-1 px-3 bg-red-500 text-white text-[10px] font-bold uppercase tracking-widest z-50 rounded">
           Variant 2: Line-Based
         </div>
         <div className="max-w-[90rem] mx-auto pt-8">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-12 lg:gap-20">
-            {/* Left: Pull Quote & Rating */}
             <FadeIn className="flex flex-col justify-between">
               <div>
                 <p className="font-sans text-xs font-bold uppercase tracking-[0.3em] mb-6 text-brand-accent flex items-center gap-3">
@@ -1210,7 +1209,6 @@ export default function SingleProductClient({
               </div>
             </FadeIn>
 
-            {/* Right: Review List */}
             <div className="flex flex-col">
               {[
                 {
@@ -1271,15 +1269,15 @@ export default function SingleProductClient({
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* ========================================= */}
       {/* REVIEWS SECTION - VARIANT 3 (BADGE STYLE) */}
       {/* ========================================= */}
       <section className="bg-white text-brand-dark py-20 px-6 overflow-hidden relative">
-        <div className="absolute top-4 left-6 py-1 px-3 bg-red-500 text-white text-[10px] font-bold uppercase tracking-widest z-50 rounded">
+        {/* <div className="absolute top-4 left-6 py-1 px-3 bg-red-500 text-white text-[10px] font-bold uppercase tracking-widest z-50 rounded">
           Variant 3: Colored Accent Cards
-        </div>
+        </div> */}
         <FadeIn className="max-w-[90rem] mx-auto text-center mb-16 pt-8">
           <p className="font-sans text-xs font-bold uppercase tracking-[0.3em] mb-4 text-brand-accent">
             Customer Reviews
