@@ -20,24 +20,27 @@ const profileStories: ProfileStory[] = [
     inspiration:
       "Inspired by late-evening warmth: toasted sweetness, amber shadows, and plush knit textures after a long day.",
     notes: ["Toasted macadamia", "Caramelized sugar", "Vanilla musk"],
-    image: "/img3.png",
-    overlay: "linear-gradient(180deg, rgba(111,42,51,0.08) 0%, rgba(111,42,51,0.8) 100%)",
+    image: "/burnt-sugar-c1.png",
+    overlay:
+      "linear-gradient(180deg, rgba(111,42,51,0.08) 0%, rgba(111,42,51,0.8) 100%)",
   },
   {
     name: "Acid Bloom",
     inspiration:
       "Inspired by daylight energy: crisp greens, dewy petals, and the sharp freshness of just-dried cotton.",
     notes: ["Green leaves", "Dewy peony", "White woods"],
-    image: "/img4.png",
-    overlay: "linear-gradient(180deg, rgba(76,124,66,0.08) 0%, rgba(41,71,35,0.82) 100%)",
+    image: "/acid-bloom-c1.png",
+    overlay:
+      "linear-gradient(180deg, rgba(76,124,66,0.08) 0%, rgba(41,71,35,0.82) 100%)",
   },
   {
     name: "Pale Ash",
     inspiration:
       "Inspired by quiet interiors: airy lavender, soft powder, and light woods that sit close to the skin.",
     notes: ["Bergamot", "French lavender", "Ash wood"],
-    image: "/img6.png",
-    overlay: "linear-gradient(180deg, rgba(109,95,131,0.08) 0%, rgba(62,54,76,0.84) 100%)",
+    image: "/pale-ash-c1.png",
+    overlay:
+      "linear-gradient(180deg, rgba(109,95,131,0.08) 0%, rgba(62,54,76,0.84) 100%)",
   },
 ];
 
@@ -49,7 +52,8 @@ const socialCards = [
   },
   {
     image: "/img7.png",
-    caption: "Ingredient-led worlds inspired by citrus, florals, and vanilla warmth.",
+    caption:
+      "Ingredient-led worlds inspired by citrus, florals, and vanilla warmth.",
     tag: "#DryDownRitual",
   },
   {
@@ -185,7 +189,7 @@ export default function AboutPage() {
               We sketch each scent profile like a perfume house, then pair it
               with plant-led conditioning technology that protects fiber life.
             </p>
-            <p className="font-sans text-brand-dark/70 text-base leading-relaxed max-w-3xl">
+            <p className="font-sans text-brand-dark/80 text-lg leading-relaxed max-w-3xl">
               The result is a new category experience: garments that feel soft,
               smell layered, and carry a quiet signature from wash to wear.
             </p>
@@ -231,14 +235,11 @@ export default function AboutPage() {
               Fragrance Profile Inspiration
             </p>
             <h2 className="font-serif text-4xl md:text-6xl leading-tight mb-6">
-              Three scent worlds.
-              <br />
-              Three emotional atmospheres.
+              Three moods. Three ways to be remembered.
             </h2>
             <p className="font-sans text-brand-base/75 text-lg leading-relaxed">
-              Every profile is developed as an atmosphere first, then translated
-              into fabric care performance. Notes are chosen to evoke memory,
-              mood, and texture.
+              Each fragrance is designed as a distinct world, so your clothes
+              carry not just scent, but a feeling.
             </p>
           </div>
 
@@ -259,7 +260,10 @@ export default function AboutPage() {
                   sizes="(max-width: 768px) 100vw, 33vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0" style={{ background: story.overlay }} />
+                <div
+                  className="absolute inset-0"
+                  style={{ background: story.overlay }}
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
 
                 <div className="relative z-10 p-6 h-full flex flex-col justify-end">
